@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: doume
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://db:5432/chat?characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+    username: root
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        show_sql: true

@@ -1,6 +1,7 @@
 package hs.kr.gbsw.doume.user.service
 
 import hs.kr.gbsw.doume.common.dto.BaseResponse
+import hs.kr.gbsw.doume.common.exception.InvalidInputException
 import hs.kr.gbsw.doume.common.status.ResponseCode
 import hs.kr.gbsw.doume.user.dto.UserSignupDto
 import hs.kr.gbsw.doume.user.repository.UserRepository

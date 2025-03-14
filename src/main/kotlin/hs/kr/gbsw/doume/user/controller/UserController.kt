@@ -2,8 +2,9 @@ package hs.kr.gbsw.doume.user.controller
 
 import hs.kr.gbsw.doume.common.dto.BaseResponse
 import hs.kr.gbsw.doume.common.status.ResponseCode
-import hs.kr.gbsw.doume.user.dto.UserSignupDto
+import hs.kr.gbsw.doume.user.dto.UserSignupRequest
 import hs.kr.gbsw.doume.user.service.UserService
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -18,7 +19,7 @@ class UserController(
 ) {
 
     @PostMapping
-    fun signup(@RequestBody dto: UserSignupDto): ResponseEntity<String> {
+    fun signup(@Valid @RequestBody dto: UserSignupRequest): ResponseEntity<String> {
         val result = userService.signup(dto)
 
         if (result.responseCode == ResponseCode.SUCCESS.name) {

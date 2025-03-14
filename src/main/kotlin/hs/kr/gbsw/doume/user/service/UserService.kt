@@ -2,7 +2,7 @@ package hs.kr.gbsw.doume.user.service
 
 import hs.kr.gbsw.doume.common.dto.BaseResponse
 import hs.kr.gbsw.doume.common.status.ResponseCode
-import hs.kr.gbsw.doume.user.dto.UserSignupDto
+import hs.kr.gbsw.doume.user.dto.UserSignupRequest
 import hs.kr.gbsw.doume.user.repository.UserRepository
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -13,9 +13,9 @@ class UserService(
     private val passwordEncoder: PasswordEncoder
 ) {
 
-    fun signup(dto: UserSignupDto): BaseResponse<Unit> {
+    fun signup(dto: UserSignupRequest): BaseResponse<Unit> {
 
-        var user = userRepository.findByEmail(dto.email)
+        var user = userRepository.findByEmail(dto.email!!)
         if (user != null) {
             return BaseResponse(ResponseCode.ERROR.name, null, "이미 존재하는 이메일입니다.")
         }

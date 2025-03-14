@@ -1,6 +1,5 @@
 package hs.kr.gbsw.doume.user.controller
 
-import hs.kr.gbsw.doume.common.dto.BaseResponse
 import hs.kr.gbsw.doume.common.status.ResponseCode
 import hs.kr.gbsw.doume.user.dto.UserSignupRequest
 import hs.kr.gbsw.doume.user.service.UserService

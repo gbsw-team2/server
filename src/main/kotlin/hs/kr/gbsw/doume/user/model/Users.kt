@@ -20,6 +20,7 @@ class Users(
     @Column(nullable = false)
     var password: String,
 
+    @Column(nullable = false)
     var country: Int?,
 
     @CreationTimestamp

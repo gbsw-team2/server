@@ -1,4 +1,4 @@
-package hs.kr.gbsw.doumi
+package hs.kr.gbsw.doume
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

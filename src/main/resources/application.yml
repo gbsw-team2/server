@@ -1,13 +1,11 @@
 spring:
   application:
-    name: doumi
-  config:
-    import: optional:file:.env[.properties]
+    name: doume
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: jdbc:postgresql://db:5432/chat?characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+    username: root
+    password: password
   jpa:
     hibernate:
       ddl-auto: update

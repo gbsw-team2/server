@@ -1,4 +1,4 @@
-package hs.kr.gbsw.doume
+package hs.kr.gbsw.doumi
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
@@ -7,7 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest
 class DoumeApplicationTests {
 
 	@Test
-	fun contextLoads() {
+	fun test() {
+
 	}
 
 }

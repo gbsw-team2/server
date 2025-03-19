@@ -1,8 +1,8 @@
-package hs.kr.gbsw.doume.user.controller
+package hs.kr.gbsw.doumi.user.controller
 
-import hs.kr.gbsw.doume.common.status.ResponseCode
-import hs.kr.gbsw.doume.user.dto.UserSignupRequest
-import hs.kr.gbsw.doume.user.service.UserService
+import hs.kr.gbsw.doumi.common.status.ResponseCode
+import hs.kr.gbsw.doumi.user.dto.UserSignupRequest
+import hs.kr.gbsw.doumi.user.service.UserService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

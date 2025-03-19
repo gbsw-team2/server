@@ -1,9 +1,9 @@
-package hs.kr.gbsw.doume.user.service
+package hs.kr.gbsw.doumi.user.service
 
-import hs.kr.gbsw.doume.common.dto.BaseResponse
-import hs.kr.gbsw.doume.common.status.ResponseCode
-import hs.kr.gbsw.doume.user.dto.UserSignupRequest
-import hs.kr.gbsw.doume.user.repository.UserRepository
+import hs.kr.gbsw.doumi.common.dto.BaseResponse
+import hs.kr.gbsw.doumi.common.status.ResponseCode
+import hs.kr.gbsw.doumi.user.dto.UserSignupRequest
+import hs.kr.gbsw.doumi.user.repository.UserRepository
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 

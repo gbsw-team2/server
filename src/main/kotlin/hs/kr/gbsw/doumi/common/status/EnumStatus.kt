@@ -1,4 +1,4 @@
-package hs.kr.gbsw.doume.common.status
+package hs.kr.gbsw.doumi.common.status
 
 enum class ResponseCode(val msg: String) {
     SUCCESS("SUCCESS"),

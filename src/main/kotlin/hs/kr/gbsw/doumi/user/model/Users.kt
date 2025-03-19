@@ -1,4 +1,4 @@
-package hs.kr.gbsw.doume.user.model
+package hs.kr.gbsw.doumi.user.model
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity

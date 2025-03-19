@@ -1,6 +1,6 @@
 spring:
   application:
-    name: doume
+    name: doumi
   config:
     import: optional:file:.env[.properties]
   datasource:

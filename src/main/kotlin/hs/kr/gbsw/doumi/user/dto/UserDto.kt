@@ -1,6 +1,6 @@
-package hs.kr.gbsw.doume.user.dto
+package hs.kr.gbsw.doumi.user.dto
 
-import hs.kr.gbsw.doume.user.model.Users
+import hs.kr.gbsw.doumi.user.model.Users
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
 

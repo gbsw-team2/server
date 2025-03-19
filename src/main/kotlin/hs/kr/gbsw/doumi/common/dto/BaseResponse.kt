@@ -1,6 +1,6 @@
-package hs.kr.gbsw.doume.common.dto
+package hs.kr.gbsw.doumi.common.dto
 
-import hs.kr.gbsw.doume.common.status.ResponseCode
+import hs.kr.gbsw.doumi.common.status.ResponseCode
 
 data class BaseResponse<T>(
     val responseCode: String = ResponseCode.SUCCESS.name,

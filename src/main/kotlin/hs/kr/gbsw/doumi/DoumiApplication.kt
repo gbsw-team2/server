@@ -4,8 +4,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class DoumeApplication
+class DoumiApplication
 
 fun main(args: Array<String>) {
-	runApplication<DoumeApplication>(*args)
+	runApplication<DoumiApplication>(*args)
 }

@@ -1,6 +1,8 @@
 package hs.kr.gbsw.doumi.user.controller
 
+import hs.kr.gbsw.doumi.auth.jwt.TokenInfo
 import hs.kr.gbsw.doumi.common.status.ResponseCode
+import hs.kr.gbsw.doumi.user.dto.UserLoginRequest
 import hs.kr.gbsw.doumi.user.dto.UserSignupRequest
 import hs.kr.gbsw.doumi.user.service.UserService
 import jakarta.validation.Valid
@@ -19,13 +21,13 @@ class UserController(
 
     @PostMapping
     fun signup(@Valid @RequestBody dto: UserSignupRequest): ResponseEntity<String> {
-        val result = userService.signup(dto)
-
-        if (result.responseCode == ResponseCode.SUCCESS.name) {
-            return ResponseEntity(result.message, HttpStatus.CREATED)
-        }
-        else {
-            return ResponseEntity(result.message, HttpStatus.BAD_REQUEST)
-        }
+        return userService.signup(dto)
     }
+
+    @PostMapping("/login")
+    fun login(@RequestBody @Valid dto: UserLoginRequest): ResponseEntity<TokenInfo> {
+        val tokenInfo = userService.login(dto)
+        return ResponseEntity(tokenInfo, HttpStatus.OK)
+    }
+
 }

@@ -32,3 +32,8 @@ data class UserLoginRequest(
     @field:NotBlank(message = "비밀번호를 입력해 주세요.")
     val password: String
 )
+
+data class UserLoginResponse(
+    val id: Long,
+    val email: String
+)

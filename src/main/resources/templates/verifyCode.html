@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            text-align: center;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            padding: 20px;
+            width: 400px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background-color: #3E7BC9;
+            color: white;
+            padding: 10px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .content {
+            padding: 20px;
+        }
+        .greeting {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .message {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        .code {
+            font-size: 36px;
+            font-weight: bold;
+            color: #3E7BC9;
+            margin: 20px 0;
+        }
+        .warning {
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">도우미 인증 코드</div>
+    <div class="content">
+        <div class="greeting">안녕하세요!</div>
+        <div class="message">아래 인증 코드를 사용하여 인증을 완료하세요.</div>
+        <div class="code">{AUTH_CODE}</div>
+        <div class="warning">코드는 10분 동안 유효합니다.</div>
+    </div>
+</div>
+</body>
+</html>

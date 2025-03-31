@@ -39,5 +39,5 @@ out/
 ### Kotlin ###
 .kotlin
 
-### ENV ###
-.env*
+### yml ###
+*.yml

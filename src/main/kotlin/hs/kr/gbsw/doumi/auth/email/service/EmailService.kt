@@ -53,7 +53,7 @@ class EmailService(
         }
     }
 
-    fun verifyCode(userEmail: String, verifyCode: String): ResponseEntity<String> {
+    fun validateEmailCode(userEmail: String, verifyCode: String): ResponseEntity<String> {
         return try {
             val verificationInfo = verificationMap[userEmail]
                 ?: return ResponseEntity.status(404).body("이 이메일에 대한 인증 코드를 찾을 수 없습니다.")

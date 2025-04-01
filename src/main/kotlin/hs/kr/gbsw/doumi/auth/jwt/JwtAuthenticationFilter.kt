@@ -4,6 +4,7 @@ import jakarta.servlet.FilterChain
 import jakarta.servlet.ServletRequest
 import jakarta.servlet.ServletResponse
 import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.util.StringUtils
 import org.springframework.web.filter.GenericFilterBean
@@ -18,16 +19,28 @@ class JwtAuthenticationFilter(
         chain: FilterChain?
     ) {
         val httpRequest = request as HttpServletRequest
+        val httpResponse = response as HttpServletResponse
+
         if (httpRequest.requestURI == "/api/users/login") {
             chain?.doFilter(request, response)
             return
         }
 
-        val token = resolveToken(httpRequest)
+        val accessToken = resolveToken(httpRequest)
 
-        if (token != null && jwtTokenProvider.validateToken(token)) {
-            val authentication = jwtTokenProvider.getAuthentication(token);
+        if (accessToken != null && jwtTokenProvider.validateToken(accessToken)) {
+            val authentication = jwtTokenProvider.getAuthentication(accessToken);
             SecurityContextHolder.getContext().authentication = authentication
+        } else {
+            val refreshToken = resolveToken(httpRequest)
+            if (refreshToken != null && jwtTokenProvider.validateRefreshToken(refreshToken)) {
+                val newAccessToken = jwtTokenProvider.recreationAccessToken(refreshToken)
+                if (newAccessToken != null) {
+                    httpResponse.setHeader("Authorization", "Bearer $newAccessToken")
+                    val authentication = jwtTokenProvider.getAuthentication(newAccessToken)
+                    SecurityContextHolder.getContext().authentication = authentication
+                }
+            }
         }
 
         chain?.doFilter(request, response)
@@ -41,6 +54,10 @@ class JwtAuthenticationFilter(
         } else {
             null
         }
+    }
+
+    private fun resolveRefreshToken(request: HttpServletRequest): String? {
+        return request.getHeader("Refresh-Token")
     }
 
 }

@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service
 @Service
 class CustomUserDetailsService(
     private val userRepository: UserRepository,
-    private val passwordEncoder: PasswordEncoder
 ): UserDetailsService {
 
     override fun loadUserByUsername(username: String): UserDetails =

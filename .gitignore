@@ -39,5 +39,7 @@ out/
 ### Kotlin ###
 .kotlin
 
-### ENV ###
+### YML ###
 .env*
+*.yml
+application.properties

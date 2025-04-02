@@ -40,6 +40,5 @@ out/
 .kotlin
 
 ### YML ###
-.env*
-*.yml
+/src/main/resources/application.yml
 application.properties

@@ -32,7 +32,7 @@ class JwtAuthenticationFilter(
             val authentication = jwtTokenProvider.getAuthentication(accessToken);
             SecurityContextHolder.getContext().authentication = authentication
         } else {
-            val refreshToken = resolveToken(httpRequest)
+            val refreshToken = resolveRefreshToken(httpRequest)
             if (refreshToken != null && jwtTokenProvider.validateRefreshToken(refreshToken)) {
                 val newAccessToken = jwtTokenProvider.recreationAccessToken(refreshToken)
                 if (newAccessToken != null) {

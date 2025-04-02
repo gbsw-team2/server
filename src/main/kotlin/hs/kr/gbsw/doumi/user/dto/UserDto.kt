@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Pattern
+import java.time.LocalDateTime
 
 data class UserSignupRequest(
     @field:Email(message = "유효한 이메일 형식을 사용해주세요.")
@@ -33,7 +34,8 @@ data class UserLoginRequest(
     val password: String
 )
 
-data class UserLoginResponse(
-    val id: Long,
-    val email: String
+data class UserInfoResponse(
+    val email: String,
+    val country: Int,
+    val createdAt: LocalDateTime
 )

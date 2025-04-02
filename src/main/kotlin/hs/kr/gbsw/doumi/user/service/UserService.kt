@@ -2,6 +2,7 @@ package hs.kr.gbsw.doumi.user.service
 
 import hs.kr.gbsw.doumi.auth.jwt.JwtTokenProvider
 import hs.kr.gbsw.doumi.auth.jwt.TokenInfo
+import hs.kr.gbsw.doumi.user.dto.UserInfoResponse
 import hs.kr.gbsw.doumi.user.dto.UserLoginRequest
 import hs.kr.gbsw.doumi.user.dto.UserSignupRequest
 import hs.kr.gbsw.doumi.user.model.Users
@@ -40,6 +41,15 @@ class UserService(
         val authentication = authenticationManagerBuilder.`object`.authenticate(authenticationToken)
 
         return jwtTokenProvider.createToken(authentication)
+    }
+
+    fun userInfo(email: String): UserInfoResponse {
+        val user = userRepository.findByEmail(email)!!
+        return UserInfoResponse(
+            user.email,
+            user.country!!,
+            user.createdAt
+        )
     }
 
 }

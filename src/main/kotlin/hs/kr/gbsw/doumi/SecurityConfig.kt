@@ -26,7 +26,7 @@ class SecurityConfig(
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests {
                 it.requestMatchers("/api/users", "/api/users/login").permitAll()
-                    .requestMatchers("/api/users/info").hasRole("USER")
+                    .requestMatchers("/api/users/info").authenticated()
                     .anyRequest().permitAll()
             }
             .addFilterBefore(

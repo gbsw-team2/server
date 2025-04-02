@@ -4,3 +4,7 @@ enum class ResponseCode(val msg: String) {
     SUCCESS("SUCCESS"),
     ERROR("ERROR")
 }
+
+enum class ROLE {
+    USER
+}

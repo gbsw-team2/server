@@ -12,6 +12,9 @@ data class UserSignupRequest(
     @field:NotBlank(message = "이메일을 입력해 주세요.")
     val email: String?,
 
+    @field:NotBlank(message = "인증번호를 입력해 주세요")
+    val vernum: String?,
+
     @field:Pattern(
         regexp = "(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&#])[A-Za-z\\d@$!%*?&#]{8,}",
         message = "비밀번호는 영문, 숫자 및 특수문자(@$!%*?&#)를 포함하여 8자 이상으로 작성해주세요.")

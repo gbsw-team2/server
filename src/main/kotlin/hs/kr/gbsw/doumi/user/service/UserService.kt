@@ -1,13 +1,12 @@
 package hs.kr.gbsw.doumi.user.service
 
+import hs.kr.gbsw.doumi.auth.email.service.EmailService
 import hs.kr.gbsw.doumi.auth.jwt.JwtTokenProvider
 import hs.kr.gbsw.doumi.auth.jwt.TokenInfo
 import hs.kr.gbsw.doumi.user.dto.UserInfoResponse
 import hs.kr.gbsw.doumi.user.dto.UserLoginRequest
 import hs.kr.gbsw.doumi.user.dto.UserSignupRequest
-import hs.kr.gbsw.doumi.user.model.Users
 import hs.kr.gbsw.doumi.user.repository.UserRepository
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -20,10 +19,15 @@ class UserService(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
     private val authenticationManagerBuilder: AuthenticationManagerBuilder,
-    private val jwtTokenProvider: JwtTokenProvider
+    private val jwtTokenProvider: JwtTokenProvider,
+    private val emailService: EmailService
 ) {
 
     fun signup(dto: UserSignupRequest): ResponseEntity<String> {
+        val verified = emailService.validateEmailCode(dto.email!!, dto.vernum!!)
+        if (verified.statusCode != HttpStatus.OK) {
+            return verified
+        }
 
         var user = userRepository.findByEmail(dto.email!!)
         if (user != null) {

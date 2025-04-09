@@ -43,6 +43,7 @@ dependencies {
 	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.3")
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.3")
 	implementation("org.springframework.boot:spring-boot-starter-mail:3.1.5")
+	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml")
 }
 
 kotlin {

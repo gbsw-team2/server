@@ -1,13 +1,13 @@
-package hs.kr.gbsw.doumi.user.controller
+package hs.kr.gbsw.doumi.auth.user.controller
 
 import hs.kr.gbsw.doumi.auth.jwt.TokenInfo
 import hs.kr.gbsw.doumi.auth.jwt.dto.CustomUser
 import hs.kr.gbsw.doumi.common.status.ResponseCode
-import hs.kr.gbsw.doumi.user.dto.UserInfoResponse
-import hs.kr.gbsw.doumi.user.dto.UserLoginRequest
-import hs.kr.gbsw.doumi.user.dto.UserSignupRequest
-import hs.kr.gbsw.doumi.user.model.Users
-import hs.kr.gbsw.doumi.user.service.UserService
+import hs.kr.gbsw.doumi.auth.user.dto.UserInfoResponse
+import hs.kr.gbsw.doumi.auth.user.dto.UserLoginRequest
+import hs.kr.gbsw.doumi.auth.user.dto.UserSignupRequest
+import hs.kr.gbsw.doumi.auth.user.model.Users
+import hs.kr.gbsw.doumi.auth.user.service.UserService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

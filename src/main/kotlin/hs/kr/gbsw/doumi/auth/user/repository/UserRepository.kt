@@ -1,6 +1,6 @@
-package hs.kr.gbsw.doumi.user.repository
+package hs.kr.gbsw.doumi.auth.user.repository
 
-import hs.kr.gbsw.doumi.user.model.Users
+import hs.kr.gbsw.doumi.auth.user.model.Users
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface UserRepository: JpaRepository<Users, Long> {

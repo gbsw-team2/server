@@ -1,7 +1,7 @@
 package hs.kr.gbsw.doumi.auth.jwt
 
 import hs.kr.gbsw.doumi.auth.jwt.dto.CustomUser
-import hs.kr.gbsw.doumi.user.model.Users
+import hs.kr.gbsw.doumi.auth.user.model.Users
 import io.jsonwebtoken.*
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys

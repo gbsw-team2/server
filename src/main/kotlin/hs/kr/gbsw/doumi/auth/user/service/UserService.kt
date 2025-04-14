@@ -1,12 +1,12 @@
-package hs.kr.gbsw.doumi.user.service
+package hs.kr.gbsw.doumi.auth.user.service
 
 import hs.kr.gbsw.doumi.auth.email.service.EmailService
 import hs.kr.gbsw.doumi.auth.jwt.JwtTokenProvider
 import hs.kr.gbsw.doumi.auth.jwt.TokenInfo
-import hs.kr.gbsw.doumi.user.dto.UserInfoResponse
-import hs.kr.gbsw.doumi.user.dto.UserLoginRequest
-import hs.kr.gbsw.doumi.user.dto.UserSignupRequest
-import hs.kr.gbsw.doumi.user.repository.UserRepository
+import hs.kr.gbsw.doumi.auth.user.dto.UserInfoResponse
+import hs.kr.gbsw.doumi.auth.user.dto.UserLoginRequest
+import hs.kr.gbsw.doumi.auth.user.dto.UserSignupRequest
+import hs.kr.gbsw.doumi.auth.user.repository.UserRepository
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken

@@ -1,8 +1,8 @@
 package hs.kr.gbsw.doumi.auth.jwt.service
 
 import hs.kr.gbsw.doumi.auth.jwt.dto.CustomUser
-import hs.kr.gbsw.doumi.user.model.Users
-import hs.kr.gbsw.doumi.user.repository.UserRepository
+import hs.kr.gbsw.doumi.auth.user.model.Users
+import hs.kr.gbsw.doumi.auth.user.repository.UserRepository
 import jakarta.persistence.EnumType
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails

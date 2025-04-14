@@ -1,4 +1,4 @@
-package hs.kr.gbsw.doumi.user.model
+package hs.kr.gbsw.doumi.auth.user.model
 
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue

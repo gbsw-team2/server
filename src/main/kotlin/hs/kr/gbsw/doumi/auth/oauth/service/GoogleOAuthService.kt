@@ -58,10 +58,10 @@ class GoogleOAuthService(
                 response.body as? Map<String, Any>
                     ?: throw RuntimeException("응답 형식이 올바르지 않습니다.")
             } else {
-                throw RuntimeException("Google 토큰 요청 실패: ${response.statusCode}")
+                throw RuntimeException("Google 토큰 요청 실패")
             }
         } catch (ex: Exception) {
-            throw RuntimeException("Google 인증 코드를 처리하는 중 오류 발생: ${ex.message}")
+            throw RuntimeException("Google 인증 코드를 처리하는 중 오류 발생")
         }
     }
 

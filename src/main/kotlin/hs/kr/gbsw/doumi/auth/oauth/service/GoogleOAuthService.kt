@@ -114,9 +114,7 @@ class GoogleOAuthService(
             entity,
             Map::class.java
         )
-        if (response.statusCode != HttpStatus.OK) {
-            throw RuntimeException("Failed to fetch user info: ${response.statusCode}")
-        }
+
         @Suppress("UNCHECKED_CAST")
         return response.body as Map<String, Any>
     }

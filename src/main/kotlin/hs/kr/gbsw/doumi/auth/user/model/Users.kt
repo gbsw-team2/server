@@ -23,7 +23,7 @@ class Users(
     @Column(nullable = true)
     var password: String?,
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     var country: Int?,
 
     @CreationTimestamp

@@ -34,7 +34,7 @@ data class UserSignupRequest(
             name = name,
             password = password,
             country = country,
-            provider = provider,
+            provider = provider ?: "default",
             providerId = providerId,
         )
 }

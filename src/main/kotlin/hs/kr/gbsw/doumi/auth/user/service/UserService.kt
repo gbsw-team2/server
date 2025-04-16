@@ -24,20 +24,21 @@ class UserService(
 ) {
 
     fun signup(dto: UserSignupRequest): ResponseEntity<String> {
-        val verified = emailService.validateEmailCode(dto.email!!, dto.vernum!!)
+        val verified = emailService.validateEmailCode(dto.email, dto.vernum)
         if (verified.statusCode != HttpStatus.OK) {
             return verified
         }
 
-        var user = userRepository.findByEmail(dto.email!!)
+        var user = userRepository.findByEmail(dto.email)
         if (user != null) {
-            return ResponseEntity("이미 존재하는 이메일입니다.", HttpStatus.BAD_REQUEST)
+            return ResponseEntity.status(400).body("이미 존재하는 이메일 입니다.")
+
         }
 
-        user = dto.toEntity(passwordEncoder.encode(dto.password))
+        user = dto.toEntity(dto.name, passwordEncoder.encode(dto.password))
         userRepository.save(user)
 
-        return ResponseEntity("회원가입이 완료 되었습니다.", HttpStatus.CREATED)
+        return ResponseEntity.status(HttpStatus.OK).body("회원가입이 완료되었습니다.")
     }
 
     fun login(dto: UserLoginRequest): TokenInfo {
@@ -51,8 +52,10 @@ class UserService(
         val user = userRepository.findByEmail(email)!!
         return UserInfoResponse(
             user.email,
+            user.name,
             user.country!!,
-            user.createdAt
+            user.createdAt,
+            user.provider
         )
     }
 

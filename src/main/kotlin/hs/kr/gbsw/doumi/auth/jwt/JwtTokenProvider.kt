@@ -1,5 +1,6 @@
 package hs.kr.gbsw.doumi.auth.jwt
 
+import hs.kr.gbsw.doumi.auth.redis.service.RedisService
 import hs.kr.gbsw.doumi.auth.user.model.Users
 import io.jsonwebtoken.*
 import io.jsonwebtoken.io.Decoders
@@ -15,7 +16,9 @@ const val ACCESS_EXPIRATION_MILLISECONDS: Long = 1000 * 60 * 30
 const val REFRESH_EXPIRATION_MILLISECONDS: Long = 1000 * 60 * 60 * 24 * 14
 
 @Component
-class JwtTokenProvider {
+class JwtTokenProvider(
+    private val redisService: RedisService
+) {
 
     @Value("\${jwt.access_secret}")
     lateinit var access: String
@@ -50,7 +53,8 @@ class JwtTokenProvider {
             .signWith(refreshKey, Jwts.SIG.HS256)
             .compact()
 
-        return TokenInfo("Bearer", accessToken, refreshToken)
+        redisService.saveRefreshToken(user.email, refreshToken)
+        return TokenInfo("Bearer", accessToken)
     }
 
     fun validateToken(accessToken: String): Boolean {
@@ -59,40 +63,53 @@ class JwtTokenProvider {
             return true
         } catch (e: Exception) {
             when (e) {
-                is SecurityException -> {}
-                is MalformedJwtException -> {}
-                is ExpiredJwtException -> {}
-                is UnsupportedJwtException -> {}
-                is IllegalArgumentException -> {}
-                else -> {}
+                is SecurityException, is MalformedJwtException,
+                is ExpiredJwtException, is UnsupportedJwtException,
+                is IllegalArgumentException -> println(e.message)
             }
-            println(e.message)
+            return false
         }
-        return false
     }
 
-    fun validateRefreshToken(accessToken: String): Boolean {
+    fun validateExpiredAccessToken(accessToken: String, expectedEmail: String): Boolean {
         try {
-            getClaims(accessToken, refreshKey)
+            val claims = Jwts.parser()
+                .verifyWith(accessKey)
+                .build()
+                .parseSignedClaims(accessToken)
+                .payload
+            return claims.subject == expectedEmail
+        } catch (e: Exception) {
+            when (e) {
+                is SecurityException, is MalformedJwtException,
+                is UnsupportedJwtException, is IllegalArgumentException -> println(e.message)
+                is ExpiredJwtException -> {
+                    return e.claims.subject == expectedEmail
+                }
+            }
+            return false
+        }
+    }
+
+    fun validateRefreshToken(email: String): Boolean {
+        val refreshToken = redisService.getRefreshToken(email) ?: return false
+        try {
+            getClaims(refreshToken, refreshKey)
             return true
         } catch (e: Exception) {
             when (e) {
-                is SecurityException -> {}
-                is MalformedJwtException -> {}
-                is ExpiredJwtException -> {}
-                is UnsupportedJwtException -> {}
-                is IllegalArgumentException -> {}
-                else -> {}
+                is SecurityException, is MalformedJwtException,
+                is ExpiredJwtException, is UnsupportedJwtException,
+                is IllegalArgumentException -> println(e.message)
             }
-            println(e.message)
+            return false
         }
-        return false
     }
 
-    fun recreationAccessToken(refreshToken: String): String? {
+    fun recreationAccessToken(email: String): String? {
+        val refreshToken = redisService.getRefreshToken(email) ?: return null
         try {
             val claims = getClaims(refreshToken, refreshKey)
-            val email = claims.subject
             val userId = claims["userId"] as Long
             val auth = claims["auth"] as String
 
@@ -114,8 +131,8 @@ class JwtTokenProvider {
         }
     }
 
-    fun getAuthentication(newAccessToken: String): UsernamePasswordAuthenticationToken? {
-        val claims = getClaims(newAccessToken, accessKey)
+    fun getAuthentication(accessToken: String): UsernamePasswordAuthenticationToken? {
+        val claims = getClaims(accessToken, accessKey)
         val email = claims.subject
         val auth = claims["auth"] as String
         val authorities = auth.split(",").map { SimpleGrantedAuthority(it.trim()) }
@@ -123,12 +140,10 @@ class JwtTokenProvider {
         return UsernamePasswordAuthenticationToken(principal, "", authorities)
     }
 
-
-    fun getClaims(accessToken: String, key: SecretKey): Claims =
+    fun getClaims(token: String, key: SecretKey): Claims =
         Jwts.parser()
             .verifyWith(key)
             .build()
-            .parseSignedClaims(accessToken)
+            .parseSignedClaims(token)
             .payload
-
 }

@@ -34,7 +34,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
-	implementation("org.postgresql:postgresql:42.7.5")
+	implementation("com.mysql:mysql-connector-j")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testImplementation("org.springframework.security:spring-security-test")
@@ -45,6 +45,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-mail:3.1.5")
 	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml")
 	implementation ("org.springframework.boot:spring-boot-starter-oauth2-client")
+	implementation ("org.springframework.boot:spring-boot-starter-data-redis")
 }
 
 kotlin {

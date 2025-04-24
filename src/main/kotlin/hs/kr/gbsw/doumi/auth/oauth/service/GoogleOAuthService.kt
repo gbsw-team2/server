@@ -1,5 +1,6 @@
 package hs.kr.gbsw.doumi.auth.oauth.service
 
+import hs.kr.gbsw.doumi.auth.jwt.ACCESS_EXPIRATION_MILLISECONDS
 import hs.kr.gbsw.doumi.auth.jwt.JwtTokenProvider
 import hs.kr.gbsw.doumi.auth.user.model.Users
 import hs.kr.gbsw.doumi.auth.user.repository.UserRepository
@@ -60,7 +61,7 @@ class GoogleOAuthService(
             } else {
                 throw RuntimeException("Google 토큰 요청 실패")
             }
-        } catch (ex: Exception) {
+        } catch (_: Exception) {
             throw RuntimeException("Google 인증 코드를 처리하는 중 오류 발생")
         }
     }
@@ -91,14 +92,24 @@ class GoogleOAuthService(
 
         val tokenInfo = jwtTokenProvider.createToken(user)
 
-        return ResponseEntity(
-            mapOf(
-                "accessToken" to tokenInfo.accessToken,
-                "refreshToken" to tokenInfo.refreshToken,
+        val cookie = ResponseCookie.from("access_token", tokenInfo.accessToken)
+            .httpOnly(true)
+            .secure(false) //현재는 개발을 위해 Https off
+            .path("/")
+            .maxAge(ACCESS_EXPIRATION_MILLISECONDS / 1000)
+            .sameSite("Lax")
+            .build()
+
+        val headers = HttpHeaders().apply {
+            add(HttpHeaders.SET_COOKIE, cookie.toString())
+        }
+
+        return ResponseEntity.ok()
+            .headers(headers)
+            .body(mapOf(
+                "message" to "토큰 갱신 성공",
                 "newUser" to (user.country == null)
-            ),
-            HttpStatus.OK
-        )
+            ))
     }
 
     private fun fetchGoogleUserInfo(accessToken: String): Map<String, Any> {

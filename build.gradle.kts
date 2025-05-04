@@ -44,6 +44,12 @@ dependencies {
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.3")
 	implementation("org.springframework.boot:spring-boot-starter-mail:3.1.5")
 	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml")
+
+	implementation(platform("com.google.cloud:libraries-bom:26.1.4"))
+	implementation("com.google.cloud:google-cloud-speech")
+	implementation("com.google.protobuf:protobuf-java:3.21.12")
+	implementation("com.fasterxml.jackson.core:jackson-databind")
+	implementation("com.google.cloud:google-cloud-translate:2.6.0")
 }
 
 kotlin {

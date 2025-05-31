@@ -3,17 +3,16 @@ package hs.kr.gbsw.doumi.board.dto
 import hs.kr.gbsw.doumi.auth.user.model.Country
 import hs.kr.gbsw.doumi.auth.user.model.Users
 import hs.kr.gbsw.doumi.board.model.Post
-import jakarta.validation.constraints.NotBlank
 import java.time.LocalDateTime
 
 data class CreatePostDto(
-    val titie: String,
+    val title: String,
     val body: String,
     val country: Int,
 ) {
     fun toEntity(user: Users, country: Country): Post {
         return Post(
-            title = this.titie,
+            title = this.title,
             body = this.body,
             country = country,
             user = user,
@@ -24,9 +23,11 @@ data class CreatePostDto(
     }
 }
 
-data class ModifyPostDto(
-    val id: Long,
+data class ResponsePostDto(
     val title: String,
     val body: String,
-    val country: Int,
+    val like: Long,
+    val createdAt: LocalDateTime,
+    val updatedAt: LocalDateTime,
+    val isWritten: Boolean,
 )

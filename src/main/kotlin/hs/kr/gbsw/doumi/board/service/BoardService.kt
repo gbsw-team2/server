@@ -113,10 +113,10 @@ class BoardService(
     }
 
     fun getPost(id: Long): Post {
-        return boardRepository.findById(id).orElseThrow { NoSuchElementException("Post with id $id not found.") }
+        return  boardRepository.findById(id).orElseThrow { NoSuchElementException("Post with id $id not found.") }
     }
 
-    fun modifyPost(id: Long, dto: ModifyPostDto): Pair<Post, Boolean> {
+    fun modifyPost(id: Long, dto: CreatePostDto): Pair<Post, Boolean> {
         val post = getPost(id)
         var modified = false
         if (post.title != dto.title) {

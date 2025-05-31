@@ -4,10 +4,9 @@ import hs.kr.gbsw.doumi.auth.user.model.Country
 import hs.kr.gbsw.doumi.auth.user.service.UserService
 import hs.kr.gbsw.doumi.board.dto.CreatePostDto
 import hs.kr.gbsw.doumi.board.dto.EventResponseDto
-import hs.kr.gbsw.doumi.board.dto.ModifyPostDto
+import hs.kr.gbsw.doumi.board.dto.ResponsePostDto
 import hs.kr.gbsw.doumi.board.model.Post
 import hs.kr.gbsw.doumi.board.service.BoardService
-import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -50,13 +49,21 @@ class BoardController(
     }
 
     @GetMapping("/{postId}")
-    fun getPost(@PathVariable(required = true) postId: Long): ResponseEntity<Post> {
+    fun getPost(@PathVariable(required = true) postId: Long): ResponseEntity<ResponsePostDto> {
         val result = boardService.getPost(postId)
-        return ResponseEntity(result, HttpStatus.OK)
+        val response = ResponsePostDto(
+            result.title,
+            result.body,
+            result.like,
+            result.createdAt,
+            result.updatedAt,
+            result.isWritten,
+        )
+        return ResponseEntity(response, HttpStatus.OK)
      }
 
     @PutMapping("/{postId}")
-    fun modifyPost(@PathVariable(required = true) postId: Long, @RequestBody dto: ModifyPostDto): ResponseEntity<Post> {
+    fun modifyPost(@PathVariable(required = true) postId: Long, @RequestBody dto: CreatePostDto): ResponseEntity<Post> {
         val result = boardService.modifyPost(postId, dto)
         return if (result.second) ResponseEntity(result.first, HttpStatus.OK) else ResponseEntity(result.first, HttpStatus.NOT_MODIFIED)
     }

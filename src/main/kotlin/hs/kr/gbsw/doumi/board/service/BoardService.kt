@@ -10,7 +10,6 @@ import hs.kr.gbsw.doumi.auth.user.repository.UserRepository
 import hs.kr.gbsw.doumi.board.dto.CreatePostDto
 import hs.kr.gbsw.doumi.board.dto.EventItem
 import hs.kr.gbsw.doumi.board.dto.EventResponseDto
-import hs.kr.gbsw.doumi.board.dto.ModifyPostDto
 import hs.kr.gbsw.doumi.board.model.Post
 import hs.kr.gbsw.doumi.board.repository.BoardRepository
 

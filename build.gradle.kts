@@ -44,7 +44,8 @@ dependencies {
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.3")
 	implementation("org.springframework.boot:spring-boot-starter-mail:3.1.5")
 	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml")
-
+	implementation ("org.springframework.boot:spring-boot-starter-oauth2-client")
+	implementation ("org.springframework.boot:spring-boot-starter-data-redis")
 	implementation(platform("com.google.cloud:libraries-bom:26.1.4"))
 	implementation("com.google.cloud:google-cloud-speech")
 	implementation("com.google.protobuf:protobuf-java:3.21.12")

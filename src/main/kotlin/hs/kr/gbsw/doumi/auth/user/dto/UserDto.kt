@@ -1,5 +1,6 @@
 package hs.kr.gbsw.doumi.auth.user.dto
 
+import hs.kr.gbsw.doumi.auth.user.model.Country
 import hs.kr.gbsw.doumi.auth.user.model.Users
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
@@ -24,7 +25,7 @@ data class UserSignupRequest(
     @field:NotNull(message = "국적을 선택해 주세요.")
     var country: Int?
 ) {
-    fun toEntity(password: String): Users =
+    fun toEntity(password: String, country: Country): Users =
         Users(email = email!!, password = password, country = country)
 }
 

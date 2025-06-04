@@ -16,7 +16,6 @@ data class CreatePostDto(
             body = this.body,
             country = country,
             user = user,
-            createdAt = LocalDateTime.now(),
             updatedAt = LocalDateTime.now(),
             isWritten = false
         )
@@ -26,7 +25,9 @@ data class CreatePostDto(
 data class ResponsePostDto(
     val title: String,
     val body: String,
-    val like: Long,
+    val like: Int,
+    val isLike: Boolean,
+    val view: Int,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,
     val isWritten: Boolean,

@@ -1,42 +1,36 @@
 package hs.kr.gbsw.doumi.board.model
 
-import hs.kr.gbsw.doumi.auth.user.model.Country
 import hs.kr.gbsw.doumi.auth.user.model.Users
 import jakarta.persistence.*
 import org.hibernate.annotations.CreationTimestamp
 import java.time.LocalDateTime
 
 @Entity
-class Post(
+class Comment(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
-
-    @Column(length = 200)
-    var title: String,
+    var id: Long? = null,
 
     var body: String,
-
-    var view: Int = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     val user: Users,
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "country_id")
-    var country: Country,
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    val post: Post,
 
     @CreationTimestamp
-    var createdAt: LocalDateTime = LocalDateTime.now(),
+    val createdAt: LocalDateTime = LocalDateTime.now(),
 
-    var updatedAt: LocalDateTime,
+    var updatedAt: LocalDateTime = LocalDateTime.now(),
     var isWritten: Boolean = false,
 ) {
     @PreUpdate
     fun onUpdate() {
-        updatedAt =LocalDateTime.now()
+        updatedAt = LocalDateTime.now()
         isWritten = true
     }
 }

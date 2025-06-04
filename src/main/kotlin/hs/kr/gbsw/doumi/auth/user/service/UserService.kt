@@ -6,6 +6,8 @@ import hs.kr.gbsw.doumi.auth.jwt.TokenInfo
 import hs.kr.gbsw.doumi.auth.user.dto.UserInfoResponse
 import hs.kr.gbsw.doumi.auth.user.dto.UserLoginRequest
 import hs.kr.gbsw.doumi.auth.user.dto.UserSignupRequest
+import hs.kr.gbsw.doumi.auth.user.model.Country
+import hs.kr.gbsw.doumi.auth.user.repository.CountryRepository
 import hs.kr.gbsw.doumi.auth.user.repository.UserRepository
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -20,7 +22,8 @@ class UserService(
     private val passwordEncoder: PasswordEncoder,
     private val authenticationManagerBuilder: AuthenticationManagerBuilder,
     private val jwtTokenProvider: JwtTokenProvider,
-    private val emailService: EmailService
+    private val emailService: EmailService,
+    private val countryRepository: CountryRepository
 ) {
 
     fun signup(dto: UserSignupRequest): ResponseEntity<String> {
@@ -29,12 +32,14 @@ class UserService(
             return verified
         }
 
-        var user = userRepository.findByEmail(dto.email!!)
+        var user = userRepository.findByEmail(dto.email)
         if (user != null) {
             return ResponseEntity("이미 존재하는 이메일입니다.", HttpStatus.BAD_REQUEST)
         }
 
-        user = dto.toEntity(passwordEncoder.encode(dto.password))
+        val country = countryRepository.findById(dto.country!!).get()
+
+        user = dto.toEntity(passwordEncoder.encode(dto.password), country)
         userRepository.save(user)
 
         return ResponseEntity("회원가입이 완료 되었습니다.", HttpStatus.CREATED)

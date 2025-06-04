@@ -10,15 +10,13 @@ import hs.kr.gbsw.doumi.auth.user.repository.UserRepository
 import hs.kr.gbsw.doumi.board.dto.CreatePostDto
 import hs.kr.gbsw.doumi.board.dto.EventItem
 import hs.kr.gbsw.doumi.board.dto.EventResponseDto
+import hs.kr.gbsw.doumi.board.model.Like
 import hs.kr.gbsw.doumi.board.model.Post
 import hs.kr.gbsw.doumi.board.repository.BoardRepository
+import hs.kr.gbsw.doumi.board.repository.LikeRepository
 
-import jakarta.persistence.criteria.CriteriaBuilder
-import jakarta.persistence.criteria.CriteriaQuery
 import jakarta.persistence.criteria.Join
 import jakarta.persistence.criteria.JoinType
-import jakarta.persistence.criteria.Predicate
-import jakarta.persistence.criteria.Root
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Page
@@ -30,14 +28,14 @@ import org.springframework.stereotype.Service
 import java.net.HttpURLConnection
 import java.net.URL
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Service
 class BoardService(
     val boardRepository: BoardRepository,
     val countryRepository: CountryRepository,
-    private val userRepository: UserRepository,
+    val userRepository: UserRepository,
+    val likeRepository: LikeRepository,
 ) {
 
     @Value("\${board.event.url}")
@@ -112,11 +110,22 @@ class BoardService(
     }
 
     fun getPost(id: Long): Post {
-        return  boardRepository.findById(id).orElseThrow { NoSuchElementException("Post with id $id not found.") }
+        return boardRepository.findById(id).orElseThrow { NoSuchElementException("Post with id $id not found.") }
     }
 
-    fun modifyPost(id: Long, dto: CreatePostDto): Pair<Post, Boolean> {
+    fun getLike(id: Long): Int {
+        return likeRepository.getLikesByPostId(id).count()
+    }
+
+    fun getIsLike(email: String, postId: Long): Boolean {
+        return likeRepository.existsByUserEmailAndId(email, postId)
+    }
+
+    fun modifyPost(email: String, id: Long, dto: CreatePostDto): Pair<Post, Boolean> {
         val post = getPost(id)
+        if (post.user.email != email) {
+            throw IllegalAccessException("Can only modify own post")
+        }
         var modified = false
         if (post.title != dto.title) {
             post.title = dto.title
@@ -134,9 +143,11 @@ class BoardService(
         return if(modified) Pair(boardRepository.save(post), modified) else Pair(post, modified)
     }
 
-    fun deletePost(id: Long) {
-        val post = boardRepository.findById(id)
-            .orElseThrow { NoSuchElementException("Post with id $id not found.") }
+    fun deletePost(email: String, id: Long) {
+        val post = getPost(id)
+        if (post.user.email != email) {
+            throw IllegalAccessException("Can only delete own post")
+        }
         boardRepository.delete(post)
     }
 
@@ -155,42 +166,16 @@ class BoardService(
         }
     }
 
-//    fun getPost(postId: Long): Post? {
-//        return boardRepository.findById(postId).orElse(null)
-//    }
-//
-//    fun getCountryPosts(country: Int, page: Int, keyword: String): Page<Post> {
-//        val sorts = ArrayList<Sort.Order>()
-//        sorts.add(Sort.Order.desc("createdDate"))
-//
-//        return boardRepository.findByCountry_Id(country)
-//    }
-//    private fun search(country: Int, keyword: String): Specification<Post> {
-//        return Specification<Post>() {
-//            val serialVersionUID = 1L
-//
-//            @Override
-//            fun toPredicate(p: Root<Post>, query: CriteriaQuery<?>, cb: CriteriaBuilder): Predicate {
-//
-//            }
-//        }
-//    }
-//
-//    private fun search(keyword: String): Specification<Post> {
-//        return object : Specification<Post> {
-//            private val serialVersionUID = 1L
-//
-//            fun toPredicate(q: Root<Post>, query: CriteriaQuery<*>, cb: CriteriaBuilder): Predicate {
-//                val kw = "%$keyword%"
-//                query.distinct(true)
-//                val u1: Join<Post, Users> = q.join("user", JoinType.LEFT)
-//
-//                return cb.or(
-//                    cb.like(q.get("title"), kw),
-//                    cb.like(q.get("body"), kw),
-//                    cb.like(u1.get("user_id"), kw),
-//                )
-//            }
-//        }
-//    }
+    fun postLike(email: String, postId: Long): Like {
+        val user = userRepository.findByEmail(email)!!
+        val post = getPost(postId)
+        val like = Like(user = user, post = post)
+        return likeRepository.save(like)
+    }
+
+    fun deleteLike(email: String, postId: Long) {
+        val like = likeRepository.getLikeByUserEmailAndPostId(email, postId)
+        likeRepository.delete(like)
+    }
+
 }

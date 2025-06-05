@@ -1,10 +1,8 @@
 package hs.kr.gbsw.doumi.auth.user.repository
 
-import hs.kr.gbsw.doumi.auth.user.model.Users
+import hs.kr.gbsw.doumi.auth.user.model.Country
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface UserRepository: JpaRepository<Users, Long> {
-    fun findByEmail(email: String): Users?
-}
+interface CountryRepository: JpaRepository<Country, Int>

@@ -8,6 +8,8 @@ import hs.kr.gbsw.doumi.auth.user.dto.CountryDto
 import hs.kr.gbsw.doumi.auth.user.dto.UserInfoResponse
 import hs.kr.gbsw.doumi.auth.user.dto.UserLoginRequest
 import hs.kr.gbsw.doumi.auth.user.dto.UserSignupRequest
+import hs.kr.gbsw.doumi.auth.user.model.Country
+import hs.kr.gbsw.doumi.auth.user.repository.CountryRepository
 import hs.kr.gbsw.doumi.auth.user.repository.UserRepository
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
@@ -25,6 +27,7 @@ class UserService(
     private val passwordEncoder: PasswordEncoder,
     private val jwtTokenProvider: JwtTokenProvider,
     private val emailService: EmailService,
+    private val countryRepository: CountryRepository
     private val redisService: RedisService
 ) {
     @Value("\${jwt.access_secret}")
@@ -42,7 +45,11 @@ class UserService(
         if (user != null) {
             return ResponseEntity.status(400).body("이미 존재하는 이메일 입니다.")
         }
-        user = dto.toEntity(dto.name, passwordEncoder.encode(dto.password))
+
+        val country = countryRepository.findById(dto.country!!).get()
+        
+        user = dto.toEntity(dto.name, passwordEncoder.encode(dto.password), country)
+
         userRepository.save(user)
 
         return ResponseEntity.status(HttpStatus.OK).body("회원가입이 완료되었습니다.")

@@ -1,16 +1,13 @@
 package hs.kr.gbsw.doumi.auth.jwt
 
-import hs.kr.gbsw.doumi.auth.jwt.dto.CustomUser
+import hs.kr.gbsw.doumi.auth.redis.service.RedisService
 import hs.kr.gbsw.doumi.auth.user.model.Users
 import io.jsonwebtoken.*
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.Authentication
-import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
-import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Component
 import java.util.Date
 import javax.crypto.SecretKey
@@ -19,7 +16,9 @@ const val ACCESS_EXPIRATION_MILLISECONDS: Long = 1000 * 60 * 30
 const val REFRESH_EXPIRATION_MILLISECONDS: Long = 1000 * 60 * 60 * 24 * 14
 
 @Component
-class JwtTokenProvider {
+class JwtTokenProvider(
+    private val redisService: RedisService
+) {
 
     @Value("\${jwt.access_secret}")
     lateinit var access: String
@@ -30,104 +29,100 @@ class JwtTokenProvider {
     private val accessKey by lazy { Keys.hmacShaKeyFor(Decoders.BASE64.decode(access)) }
     private val refreshKey by lazy { Keys.hmacShaKeyFor(Decoders.BASE64.decode(refresh)) }
 
-    fun createToken(authentication: Authentication): TokenInfo {
-        val auth = authentication.authorities
-            .joinToString(",", transform = GrantedAuthority::getAuthority)
-
+    fun createToken(user: Users): TokenInfo {
         val now = Date()
         val accessExpiration = Date(now.time + ACCESS_EXPIRATION_MILLISECONDS)
         val refreshExpiration = Date(now.time + REFRESH_EXPIRATION_MILLISECONDS)
 
-        val user = authentication.principal as CustomUser
-
         val accessToken = Jwts.builder()
-            .subject(user.username)
+            .subject(user.email)
             .issuedAt(now)
             .expiration(accessExpiration)
-            .claim("auth", auth)
-            .claim("userId", user.userId)
+            .claim("userId", user.id)
+            .claim("email", user.email)
+            .claim("auth", user.provider)
             .signWith(accessKey, Jwts.SIG.HS256)
             .compact()
 
         val refreshToken = Jwts.builder()
-            .subject(user.username)
+            .subject(user.email)
             .issuedAt(now)
             .expiration(refreshExpiration)
-            .claim("auth", auth)
-            .claim("userId", user.userId)
+            .claim("userId", user.id)
+            .claim("email", user.email)
             .signWith(refreshKey, Jwts.SIG.HS256)
             .compact()
 
-        return TokenInfo("Bearer", accessToken, refreshToken)
+        redisService.saveRefreshToken(user.email, refreshToken)
+        return TokenInfo("Bearer", accessToken)
     }
 
-    fun getAuthentication(token: String): Authentication {
-        val claims: Claims = getClaims(token, accessKey)
-
-        val auth = claims["auth"] ?: throw RuntimeException("잘못된 토큰입니다.")
-        val userId = claims["userId"] ?: throw RuntimeException("잘못된 토큰입니다.")
-
-        val authorities: Collection<GrantedAuthority> =
-            (auth as String).split(",")
-                .map { SimpleGrantedAuthority(it) }
-
-        val principal: UserDetails = CustomUser(userId.toString().toLong(), claims.subject, "", authorities)
-
-        return UsernamePasswordAuthenticationToken(principal, "", authorities)
-    }
-
-    fun validateToken(token: String): Boolean {
+    fun validateToken(accessToken: String): Boolean {
         try {
-            getClaims(token, accessKey)
+            getClaims(accessToken, accessKey)
             return true
         } catch (e: Exception) {
             when (e) {
-                is SecurityException -> {}          // 유효하지 않은 토큰
-                is MalformedJwtException -> {}      // 유효하지 않은 토큰
-                is ExpiredJwtException -> {}        // 만료된 토큰
-                is UnsupportedJwtException -> {}    // 지원되지 않는 토큰
-                is IllegalArgumentException -> {}   // claims 문자열 비어있음
-                else -> {}
+                is SecurityException, is MalformedJwtException,
+                is ExpiredJwtException, is UnsupportedJwtException,
+                is IllegalArgumentException -> println(e.message)
             }
-            println(e.message)
+            return false
         }
-        return false
     }
 
-    fun validateRefreshToken(token: String): Boolean {
+    fun validateExpiredAccessToken(accessToken: String, expectedEmail: String): Boolean {
         try {
-            getClaims(token, refreshKey)
+            val claims = Jwts.parser()
+                .verifyWith(accessKey)
+                .build()
+                .parseSignedClaims(accessToken)
+                .payload
+            return claims.subject == expectedEmail
+        } catch (e: Exception) {
+            when (e) {
+                is SecurityException, is MalformedJwtException,
+                is UnsupportedJwtException, is IllegalArgumentException -> println(e.message)
+                is ExpiredJwtException -> {
+                    return e.claims.subject == expectedEmail
+                }
+            }
+            return false
+        }
+    }
+
+    fun validateRefreshToken(email: String): Boolean {
+        val refreshToken = redisService.getRefreshToken(email) ?: return false
+        try {
+            getClaims(refreshToken, refreshKey)
             return true
         } catch (e: Exception) {
             when (e) {
-                is SecurityException -> {}          // 유효하지 않은 토큰
-                is MalformedJwtException -> {}      // 유효하지 않은 토큰
-                is ExpiredJwtException -> {}        // 만료된 토큰
-                is UnsupportedJwtException -> {}    // 지원되지 않는 토큰
-                is IllegalArgumentException -> {}   // claims 문자열 비어있음
-                else -> {}
+                is SecurityException, is MalformedJwtException,
+                is ExpiredJwtException, is UnsupportedJwtException,
+                is IllegalArgumentException -> println(e.message)
             }
-            println(e.message)
+            return false
         }
-        return false
     }
 
-    fun recreationAccessToken(refreshToken: String): String? {
+    fun recreationAccessToken(email: String): String? {
+        val refreshToken = redisService.getRefreshToken(email) ?: return null
         try {
             val claims = getClaims(refreshToken, refreshKey)
-            val username = claims.subject
+            val userId = claims["userId"] as Long
             val auth = claims["auth"] as String
-            val userId = claims["userId"] as String
 
             val now = Date()
             val accessExpiration = Date(now.time + ACCESS_EXPIRATION_MILLISECONDS)
 
             return Jwts.builder()
-                .subject(username)
+                .subject(email)
                 .issuedAt(now)
                 .expiration(accessExpiration)
-                .claim("auth", auth)
                 .claim("userId", userId)
+                .claim("email", email)
+                .claim("auth", auth)
                 .signWith(accessKey, Jwts.SIG.HS256)
                 .compact()
         } catch (e: Exception) {
@@ -136,11 +131,19 @@ class JwtTokenProvider {
         }
     }
 
-    private fun getClaims(token: String, key: SecretKey): Claims =
+    fun getAuthentication(accessToken: String): UsernamePasswordAuthenticationToken? {
+        val claims = getClaims(accessToken, accessKey)
+        val email = claims.subject
+        val auth = claims["auth"] as String
+        val authorities = auth.split(",").map { SimpleGrantedAuthority(it.trim()) }
+        val principal = org.springframework.security.core.userdetails.User(email, "", authorities)
+        return UsernamePasswordAuthenticationToken(principal, "", authorities)
+    }
+
+    fun getClaims(token: String, key: SecretKey): Claims =
         Jwts.parser()
             .verifyWith(key)
             .build()
             .parseSignedClaims(token)
             .payload
-
 }

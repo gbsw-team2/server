@@ -3,12 +3,10 @@ package hs.kr.gbsw.doumi.auth.jwt.service
 import hs.kr.gbsw.doumi.auth.jwt.dto.CustomUser
 import hs.kr.gbsw.doumi.auth.user.model.Users
 import hs.kr.gbsw.doumi.auth.user.repository.UserRepository
-import jakarta.persistence.EnumType
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
-import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
@@ -25,7 +23,7 @@ class CustomUserDetailsService(
         CustomUser(
             user.id!!,
             user.email,
-            user.password,
+            user.password ?: "",
             listOf(SimpleGrantedAuthority("USER"))
         )
 

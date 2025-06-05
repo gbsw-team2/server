@@ -11,35 +11,48 @@ import java.time.LocalDateTime
 data class UserSignupRequest(
     @field:Email(message = "유효한 이메일 형식을 사용해주세요.")
     @field:NotBlank(message = "이메일을 입력해 주세요.")
-    val email: String?,
+    val email: String,
 
-    @field:NotBlank(message = "인증번호를 입력해 주세요")
-    val vernum: String?,
+    @field:NotBlank(message = "이름을 입력해 주세요.")
+    val name: String,
+
+    @field:NotBlank(message = "인증번호를 입력해 주세요.")
+    val vernum: String,
 
     @field:Pattern(
         regexp = "(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&#])[A-Za-z\\d@$!%*?&#]{8,}",
-        message = "비밀번호는 영문, 숫자 및 특수문자(@$!%*?&#)를 포함하여 8자 이상으로 작성해주세요.")
+        message = "비밀번호는 영문, 숫자 및 특수문자(@$!%*?&#)를 포함하여 8자 이상으로 작성해주세요."
+    )
     @field:NotBlank(message = "비밀번호를 입력해 주세요.")
-    val password: String?,
+    val password: String,
 
     @field:NotNull(message = "국적을 선택해 주세요.")
-    var country: Int?
+    var country: Int
 ) {
-    fun toEntity(password: String, country: Country): Users =
-        Users(email = email!!, password = password, country = country)
+  fun toEntity(name: String, password: String, country: Country, provider: String? = null, providerId: String? = null): Users =
+        Users(
+            email = email,
+            name = name,
+            password = password,
+            country = country,
+            provider = provider ?: "default",
+            providerId = providerId,
+        )
 }
 
 data class UserLoginRequest(
     @field:Email(message = "유효한 이메일 형식을 사용해주세요.")
     @field:NotBlank(message = "이메일을 입력해 주세요.")
     val email: String,
-    
+
     @field:NotBlank(message = "비밀번호를 입력해 주세요.")
     val password: String
 )
 
 data class UserInfoResponse(
     val email: String,
+    val name: String?,
     val country: Int,
-    val createdAt: LocalDateTime
+    val createdAt: LocalDateTime,
+    val provider: String?,
 )

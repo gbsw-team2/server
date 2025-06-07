@@ -99,7 +99,11 @@ class BoardService(
         return countryRepository.findAll()
     }
 
-    fun getListByCountryId(countryId: Int, page: Int, keyword: String): Page<Post> {
+    fun getListByCountryId(
+        countryId: Int,
+        page: Int,
+        keyword: String
+    ): Page<Post> {
         val sorts: ArrayList<Sort.Order> = ArrayList()
         sorts.add(Sort.Order.desc("createdDate"))
         val pageable = PageRequest.of(page, 10, Sort.by(sorts))
@@ -121,7 +125,11 @@ class BoardService(
         return likeRepository.existsByUserEmailAndId(email, postId)
     }
 
-    fun modifyPost(email: String, id: Long, dto: CreatePostDto): Pair<Post, Boolean> {
+    fun modifyPost(
+        email: String,
+        id: Long,
+        dto: CreatePostDto
+    ): Pair<Post, Boolean> {
         val post = getPost(id)
         if (post.user.email != email) {
             throw IllegalAccessException("Can only modify own post")

@@ -4,11 +4,7 @@ import hs.kr.gbsw.doumi.auth.email.service.EmailService
 import hs.kr.gbsw.doumi.auth.jwt.ACCESS_EXPIRATION_MILLISECONDS
 import hs.kr.gbsw.doumi.auth.jwt.JwtTokenProvider
 import hs.kr.gbsw.doumi.auth.redis.service.RedisService
-import hs.kr.gbsw.doumi.auth.user.dto.CountryDto
-import hs.kr.gbsw.doumi.auth.user.dto.UserInfoResponse
-import hs.kr.gbsw.doumi.auth.user.dto.UserLoginRequest
-import hs.kr.gbsw.doumi.auth.user.dto.UserSignupRequest
-import hs.kr.gbsw.doumi.auth.user.model.Country
+import hs.kr.gbsw.doumi.auth.user.dto.*
 import hs.kr.gbsw.doumi.auth.user.repository.CountryRepository
 import hs.kr.gbsw.doumi.auth.user.repository.UserRepository
 import io.jsonwebtoken.io.Decoders
@@ -36,9 +32,9 @@ class UserService(
     private val accessKey by lazy { Keys.hmacShaKeyFor(Decoders.BASE64.decode(access)) }
 
     fun signup(dto: UserSignupRequest): ResponseEntity<String> {
-        val verified = emailService.validateEmailCode(dto.email, dto.vernum)
-        if (verified.statusCode != HttpStatus.OK) {
-            return verified
+        val verified = redisService.getVerifyEmail(dto.email)
+        if (verified != "verified") {
+            return ResponseEntity.status(401).body("인증되지 않은 이메일입니다.")
         }
 
         var user = userRepository.findByEmail(dto.email)
@@ -46,13 +42,22 @@ class UserService(
             return ResponseEntity.status(400).body("이미 존재하는 이메일 입니다.")
         }
 
-        val country = countryRepository.findById(dto.country!!).get()
+        val country = countryRepository.findById(dto.country).get()
         
         user = dto.toEntity(dto.name, passwordEncoder.encode(dto.password), country)
 
         userRepository.save(user)
 
         return ResponseEntity.status(HttpStatus.OK).body("회원가입이 완료되었습니다.")
+    }
+
+    fun verify(dto: UserSignupVerifyRequest): ResponseEntity<String> {
+        val verified = emailService.validateEmailCode(dto.email, dto.vernum)
+        if (verified.statusCode == HttpStatus.OK) {
+            redisService.saveVerifyEmail(dto.email)
+        }
+
+        return verified
     }
 
     fun login(dto: UserLoginRequest): ResponseEntity<Map<String, String>> {
@@ -88,6 +93,41 @@ class UserService(
 
     fun userInfo(email: String): UserInfoResponse {
         val user = userRepository.findByEmail(email)!!
+        return UserInfoResponse(
+            user.email,
+            user.name,
+            user.country!!,
+            user.createdAt,
+            user.provider
+        )
+    }
+
+    fun updateUserInfo(dto: UserInfoRequest, email: String): UserInfoResponse {
+        val user = userRepository.findByEmail(email)!!
+
+        if (user.name != dto.name) {
+            user.name = dto.name!!
+        }
+        if (user.country != dto.country) {
+            user.country = dto.country
+        }
+
+        return UserInfoResponse(
+            user.email,
+            user.name,
+            user.country!!,
+            user.createdAt,
+            user.provider
+        )
+    }
+
+    fun updatePassword(password: String, email: String): UserInfoResponse {
+        val user = userRepository.findByEmail(email)!!
+
+        if (!passwordEncoder.matches(password, user.password)) {
+            user.password = passwordEncoder.encode(password)
+        }
+
         return UserInfoResponse(
             user.email,
             user.name,

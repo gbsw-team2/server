@@ -4,5 +4,5 @@ import lombok.Setter
 
 @Setter
 data class CountryDto (
-    var contry: Int
+    var countryId: Int
 )

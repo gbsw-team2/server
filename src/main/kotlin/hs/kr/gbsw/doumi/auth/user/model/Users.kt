@@ -21,7 +21,7 @@ class Users(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "country_id")
-    var country: Country,
+    var country: Country?,
 
     @CreationTimestamp
     var createdAt: LocalDateTime = LocalDateTime.now(),

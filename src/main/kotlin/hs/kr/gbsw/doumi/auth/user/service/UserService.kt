@@ -27,7 +27,7 @@ class UserService(
     private val passwordEncoder: PasswordEncoder,
     private val jwtTokenProvider: JwtTokenProvider,
     private val emailService: EmailService,
-    private val countryRepository: CountryRepository
+    private val countryRepository: CountryRepository,
     private val redisService: RedisService
 ) {
     @Value("\${jwt.access_secret}")
@@ -97,14 +97,14 @@ class UserService(
         )
     }
 
-    fun updateCountry(accessToken: String, contryDto: CountryDto): ResponseEntity<String> {
+    fun updateCountry(accessToken: String, countryDto: CountryDto): ResponseEntity<String> {
         val claims = jwtTokenProvider.getClaims(accessToken, accessKey)
         val email = claims["email"] as String
 
         val user = userRepository.findByEmail(email)
             ?: return ResponseEntity.status(404).body("사용자를 찾을 수 없습니다.")
 
-        user.country = contryDto.contry
+        user.country = countryRepository.findById(countryDto.countryId).get()
         userRepository.save(user)
 
         return ResponseEntity.status(HttpStatus.OK).body("회원 정보가 업데이트되었습니다.")

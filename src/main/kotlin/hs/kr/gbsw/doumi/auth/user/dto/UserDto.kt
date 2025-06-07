@@ -52,7 +52,7 @@ data class UserLoginRequest(
 data class UserInfoResponse(
     val email: String,
     val name: String?,
-    val country: Int,
+    val country: Country,
     val createdAt: LocalDateTime,
     val provider: String?,
 )

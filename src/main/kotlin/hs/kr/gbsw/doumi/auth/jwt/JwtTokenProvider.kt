@@ -110,8 +110,8 @@ class JwtTokenProvider(
         val refreshToken = redisService.getRefreshToken(email) ?: return null
         try {
             val claims = getClaims(refreshToken, refreshKey)
-            val userId = claims["userId"] as Long
-            val auth = claims["auth"] as String
+            val userId = (claims["userId"] as Number).toLong()
+            val auth = (claims["auth"] as? String) ?: "default"
 
             val now = Date()
             val accessExpiration = Date(now.time + ACCESS_EXPIRATION_MILLISECONDS)

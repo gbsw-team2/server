@@ -44,7 +44,7 @@ class UserService(
 
         val country = countryRepository.findById(dto.country).get()
         
-        user = dto.toEntity(dto.name, passwordEncoder.encode(dto.password), country)
+        user = dto.toEntity(dto.name, passwordEncoder.encode(dto.password), country, dto.contact)
 
         userRepository.save(user)
 
@@ -97,6 +97,7 @@ class UserService(
             user.email,
             user.name,
             user.country!!.id,
+            user.contact,
             user.createdAt,
             user.provider
         )
@@ -106,7 +107,7 @@ class UserService(
         val user = userRepository.findByEmail(email)!!
 
         if (user.name != dto.name) {
-            user.name = dto.name!!
+            user.name = dto.name
         }
         if (user.country!!.id != dto.countryId) {
             val country = countryRepository.findById(dto.countryId).get()
@@ -119,6 +120,7 @@ class UserService(
             user.email,
             user.name,
             user.country!!.id,
+            user.contact,
             user.createdAt,
             user.provider
         )
@@ -137,6 +139,7 @@ class UserService(
             user.email,
             user.name,
             user.country!!.id,
+            user.contact,
             user.createdAt,
             user.provider
         )

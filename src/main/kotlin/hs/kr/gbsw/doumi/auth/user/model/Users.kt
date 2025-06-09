@@ -19,6 +19,9 @@ class Users(
     @Column(nullable = true)
     var password: String?,
 
+    @Column(nullable = true)
+    var contact: String?,
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "country_id")
     var country: Country?,

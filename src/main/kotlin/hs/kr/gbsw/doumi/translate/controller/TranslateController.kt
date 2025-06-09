@@ -19,7 +19,9 @@ class TranslateController(
 ) {
 
     @PostMapping("/voice")
-    fun uploadVoice(dto: VoiceRequest): ResponseEntity<VoiceResponse> {
+    fun uploadVoice(
+        @RequestBody dto: VoiceRequest
+    ): ResponseEntity<VoiceResponse> {
         val text = translateService.toText(dto.audio!!, dto.beforeLang!!) ?:
             return ResponseEntity(null, HttpStatus.BAD_REQUEST)
 
@@ -30,7 +32,9 @@ class TranslateController(
     }
 
     @PostMapping("/text")
-    fun uploadText(@RequestBody dto: TextRequest): ResponseEntity<TextResponse> {
+    fun uploadText(
+        @RequestBody dto: TextRequest
+    ): ResponseEntity<TextResponse> {
         val translated = translateService.translate(dto) ?:
             return ResponseEntity(null, HttpStatus.BAD_REQUEST)
 

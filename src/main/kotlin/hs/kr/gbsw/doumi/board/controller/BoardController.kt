@@ -10,6 +10,7 @@ import hs.kr.gbsw.doumi.board.service.BoardService
 import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 import java.security.Principal
 import java.time.LocalDate
@@ -31,13 +32,17 @@ class BoardController(
     }
 
     @PostMapping
-    fun createPost(@RequestBody dto: CreatePostDto, principal: Principal): ResponseEntity<Post> {
+    fun createPost(
+        @AuthenticationPrincipal principal: Principal,
+        @RequestBody dto: CreatePostDto
+    ): ResponseEntity<Post> {
         val result = boardService.createPost(dto, principal.name)
         return ResponseEntity(result, HttpStatus.CREATED)
     }
 
     @GetMapping
-    fun countryList(): ResponseEntity<List<Country>> {
+    fun countryList(
+    ): ResponseEntity<List<Country>> {
         val result = boardService.getCountries()
         return ResponseEntity(result, HttpStatus.OK)
     }
@@ -53,7 +58,10 @@ class BoardController(
     }
 
     @GetMapping("/{postId}")
-    fun getPost(@PathVariable(required = true) postId: Long, principal: Principal): ResponseEntity<ResponsePostDto> {
+    fun getPost(
+        @AuthenticationPrincipal principal: Principal,
+        @PathVariable(required = true) postId: Long
+    ): ResponseEntity<ResponsePostDto> {
         val result = boardService.getPost(postId)
         val like = boardService.getLike(postId)
         val isLike = boardService.getIsLike(principal.name, postId)
@@ -71,25 +79,38 @@ class BoardController(
      }
 
     @PutMapping("/{postId}")
-    fun modifyPost(@PathVariable(required = true) postId: Long, @RequestBody dto: CreatePostDto, principal: Principal): ResponseEntity<Post> {
+    fun modifyPost(
+        @AuthenticationPrincipal principal: Principal,
+        @PathVariable(required = true) postId: Long,
+        @RequestBody dto: CreatePostDto
+    ): ResponseEntity<Post> {
         val result = boardService.modifyPost(principal.name, postId, dto)
         return if (result.second) ResponseEntity(result.first, HttpStatus.OK) else ResponseEntity(result.first, HttpStatus.NOT_MODIFIED)
     }
 
     @DeleteMapping("/{postId}")
-    fun deletePost(@PathVariable postId: Long, principal: Principal): ResponseEntity<Void> {
+    fun deletePost(
+        @AuthenticationPrincipal principal: Principal,
+        @PathVariable postId: Long
+    ): ResponseEntity<Void> {
         boardService.deletePost(principal.name, postId)
         return ResponseEntity(HttpStatus.NO_CONTENT)
     }
 
     @PostMapping("/{postId}/like")
-    fun postLike(@PathVariable(required = true) postId: Long, principal: Principal): ResponseEntity<Like> {
+    fun postLike(
+        @AuthenticationPrincipal principal: Principal,
+        @PathVariable(required = true) postId: Long
+    ): ResponseEntity<Like> {
         val result = boardService.postLike(principal.name, postId)
         return ResponseEntity(result, HttpStatus.CREATED)
     }
 
     @DeleteMapping("/{postId}/like")
-    fun deleteLike(@PathVariable(required = true) postId: Long, principal: Principal): ResponseEntity<Void> {
+    fun deleteLike(
+        @AuthenticationPrincipal principal: Principal,
+        @PathVariable(required = true) postId: Long
+    ): ResponseEntity<Void> {
         boardService.deleteLike(email = principal.name, postId)
         return ResponseEntity(HttpStatus.NO_CONTENT)
     }

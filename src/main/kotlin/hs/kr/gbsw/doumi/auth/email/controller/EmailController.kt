@@ -15,7 +15,9 @@ class EmailController(
 ) {
 
     @PostMapping("/send")
-    fun sendEmail(@RequestBody emailDto: EmailDto): ResponseEntity<String> {
+    fun sendEmail(
+        @RequestBody emailDto: EmailDto
+    ): ResponseEntity<String> {
         return emailService.sendEmail(emailDto)
     }
 }

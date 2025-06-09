@@ -6,9 +6,6 @@ import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Service
 import java.util.concurrent.TimeUnit
 
-
-
-
 @Service
 class RedisService(private val redisTemplate: RedisTemplate<String, Any>) {
     @Value("\${jwt.refresh_secret}")
@@ -29,5 +26,18 @@ class RedisService(private val redisTemplate: RedisTemplate<String, Any>) {
 
     fun deleteRefreshToken(username: String?) {
         redisTemplate.delete(refresh + username)
+    }
+
+    fun saveVerifyEmail(email: String) {
+        redisTemplate.opsForValue().set(
+            "verify:email:$email",
+            "verified",
+            900L, // 15분
+            TimeUnit.SECONDS
+        )
+    }
+
+    fun getVerifyEmail(email: String): String? {
+        return redisTemplate.opsForValue().get("verify:email:$email") as String?
     }
 }

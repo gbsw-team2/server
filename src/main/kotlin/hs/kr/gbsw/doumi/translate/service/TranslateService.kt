@@ -55,7 +55,11 @@ class TranslateService(
     @Value("\${gcp.project_id}")
     lateinit var project_id: String
 
-    fun translate(text: String, beforeLang: String, afterLang: String): String? {
+    fun translate(
+        text: String,
+        beforeLang: String,
+        afterLang: String
+    ): String? {
         val sourceLang = beforeLang.substringBefore("-")
         val targetLang = afterLang.substringBefore("-")
         try {

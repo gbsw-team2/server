@@ -16,7 +16,11 @@ class CommentService(
     val boardService: BoardService,
 ) {
 
-    fun create(dto: CreateCommentDto, email: String, postId: Long): Comment {
+    fun create(
+        dto: CreateCommentDto,
+        email: String,
+        postId: Long
+    ): Comment {
         val user = userRepository.findByEmail(email)!!
         val post = boardService.getPost(postId)
         val comment = Comment(body = dto.body, user = user, post = post)
@@ -41,7 +45,11 @@ class CommentService(
         return commentRepository.findById(id).orElseThrow { NoSuchElementException("Comment with id $id not found.") }
     }
 
-    fun updateComment(commentId: Long, dto: UpdateCommentDto, email: String): Comment {
+    fun updateComment(
+        commentId: Long,
+        dto: UpdateCommentDto,
+        email: String
+    ): Comment {
         val comment = getComment(commentId)
 
         if (comment.user.email != email) {

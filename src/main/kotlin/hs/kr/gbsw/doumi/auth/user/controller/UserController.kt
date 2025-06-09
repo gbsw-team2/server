@@ -1,14 +1,10 @@
 package hs.kr.gbsw.doumi.auth.user.controller
 
-import hs.kr.gbsw.doumi.auth.jwt.dto.CustomUser
 import hs.kr.gbsw.doumi.auth.user.dto.*
-import hs.kr.gbsw.doumi.auth.user.model.Users
 import hs.kr.gbsw.doumi.auth.user.service.UserService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
 import java.security.Principal
 
@@ -40,9 +36,7 @@ class UserController(
     }
 
     @GetMapping("/info")
-    fun userInfo(
-        @AuthenticationPrincipal principal: Principal
-    ): ResponseEntity<UserInfoResponse> {
+    fun userInfo(principal: Principal): ResponseEntity<UserInfoResponse> {
         val email = principal.name
         val user = userService.userInfo(email)
         return ResponseEntity(user, HttpStatus.OK)
@@ -50,7 +44,7 @@ class UserController(
 
     @PutMapping("/info")
     fun updateUserInfo(
-        @AuthenticationPrincipal principal: Principal,
+        principal: Principal,
         @RequestBody dto: UserInfoRequest
     ): ResponseEntity<UserInfoResponse> {
         val email = principal.name
@@ -60,7 +54,7 @@ class UserController(
 
     @PutMapping("/info/password")
     fun updateUserPassword(
-        @AuthenticationPrincipal principal: Principal,
+        principal: Principal,
         @RequestBody password: String
     ): ResponseEntity<UserInfoResponse> {
         val email = principal.name

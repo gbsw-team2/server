@@ -19,7 +19,7 @@ class Users(
     @Column(nullable = true)
     var password: String?,
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "country_id")
     var country: Country?,
 

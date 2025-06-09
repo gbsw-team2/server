@@ -96,7 +96,7 @@ class UserService(
         return UserInfoResponse(
             user.email,
             user.name,
-            user.country!!,
+            user.country!!.id,
             user.createdAt,
             user.provider
         )
@@ -108,14 +108,17 @@ class UserService(
         if (user.name != dto.name) {
             user.name = dto.name!!
         }
-        if (user.country != dto.country) {
-            user.country = dto.country
+        if (user.country!!.id != dto.countryId) {
+            val country = countryRepository.findById(dto.countryId).get()
+            user.country = country
         }
+
+        userRepository.save(user)
 
         return UserInfoResponse(
             user.email,
             user.name,
-            user.country!!,
+            user.country!!.id,
             user.createdAt,
             user.provider
         )
@@ -128,10 +131,12 @@ class UserService(
             user.password = passwordEncoder.encode(password)
         }
 
+        userRepository.save(user)
+
         return UserInfoResponse(
             user.email,
             user.name,
-            user.country!!,
+            user.country!!.id,
             user.createdAt,
             user.provider
         )

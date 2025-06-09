@@ -83,7 +83,6 @@ class GoogleOAuthService(
                     email = email,
                     name = name,
                     password = null,
-                    phone = null,
                     country = null,
                     createdAt = LocalDateTime.now(),
                     provider = provider,

@@ -3,6 +3,7 @@ package hs.kr.gbsw.doumi.board.model
 import hs.kr.gbsw.doumi.auth.user.model.Country
 import hs.kr.gbsw.doumi.auth.user.model.Users
 import jakarta.persistence.*
+import net.minidev.json.annotate.JsonIgnore
 import org.hibernate.annotations.CreationTimestamp
 import java.time.LocalDateTime
 
@@ -22,10 +23,12 @@ class Post(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     val user: Users,
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "country_id")
+    @JsonIgnore
     var country: Country,
 
     @CreationTimestamp

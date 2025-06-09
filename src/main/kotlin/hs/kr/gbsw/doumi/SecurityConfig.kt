@@ -25,7 +25,16 @@ class SecurityConfig(
             .csrf { it.disable() }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests {
-                it.requestMatchers("/api/users", "/api/users/login").permitAll()
+                it.requestMatchers(
+                    "/api/users",
+                    "/api/users/login",
+                    "/api/users/verify",
+                    "/api/users/refresh",
+                    "/api/email/send",
+                    "/api/board/posts",
+                    "/api/board/posts/**",
+                    "/api/map"
+                ).permitAll()
                     .requestMatchers("/api/users/info").authenticated()
                     .anyRequest().permitAll()
             }

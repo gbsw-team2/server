@@ -58,13 +58,12 @@ data class UserLoginRequest(
 data class UserInfoResponse(
     val email: String,
     val name: String?,
-    val country: Country,
+    val country: Int?,
     val createdAt: LocalDateTime,
     val provider: String?,
 )
 
 data class UserInfoRequest(
-    val email: String,
     val name: String?,
-    val country: Country,
+    val countryId: Int,
 )

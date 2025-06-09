@@ -23,6 +23,7 @@ data class CreatePostDto(
 }
 
 data class ResponsePostDto(
+    val id: Long,
     val title: String,
     val body: String,
     val like: Int,

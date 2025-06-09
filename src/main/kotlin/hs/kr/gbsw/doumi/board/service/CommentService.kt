@@ -3,7 +3,6 @@ package hs.kr.gbsw.doumi.board.service
 import hs.kr.gbsw.doumi.board.dto.CreateCommentDto
 import hs.kr.gbsw.doumi.auth.user.repository.UserRepository
 import hs.kr.gbsw.doumi.board.dto.ResponseCommentDto
-import hs.kr.gbsw.doumi.board.dto.UpdateCommentDto
 import hs.kr.gbsw.doumi.board.model.Comment
 import hs.kr.gbsw.doumi.board.repository.CommentRepository
 import org.springframework.stereotype.Service
@@ -35,7 +34,8 @@ class CommentService(
             ResponseCommentDto(
                 id = comment.id!!,
                 body = comment.body,
-                updatedAt = LocalDateTime.now(),
+                createdAt = comment.createdAt,
+                updatedAt = comment.updatedAt,
                 isWritten = comment.isWritten,
             )
         }
@@ -47,17 +47,25 @@ class CommentService(
 
     fun updateComment(
         commentId: Long,
-        dto: UpdateCommentDto,
+        dto: CreateCommentDto,
         email: String
-    ): Comment {
+    ): Pair<Comment, Boolean> {
         val comment = getComment(commentId)
 
         if (comment.user.email != email) {
             throw IllegalAccessException("Can only modify own comment.")
         }
 
-        comment.body = dto.body
-        return commentRepository.save(comment)
+        var modified = false;
+
+        if (comment.body != dto.body) {
+            comment.body = dto.body
+            comment.updatedAt = LocalDateTime.now()
+            comment.isWritten = true
+            modified = true
+        }
+
+        return if (modified) Pair(commentRepository.save(comment), modified) else Pair(comment, modified)
     }
 
     fun deleteComment(commentId: Long, email: String) {

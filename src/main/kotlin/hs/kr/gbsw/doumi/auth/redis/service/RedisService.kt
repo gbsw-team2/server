@@ -32,7 +32,7 @@ class RedisService(private val redisTemplate: RedisTemplate<String, Any>) {
         redisTemplate.opsForValue().set(
             "verify:email:$email",
             "verified",
-            900L, // 15분
+            600L, // 10분
             TimeUnit.SECONDS
         )
     }

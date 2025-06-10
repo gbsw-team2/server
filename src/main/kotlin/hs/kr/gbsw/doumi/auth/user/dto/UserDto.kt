@@ -38,7 +38,7 @@ data class UserSignupRequest(
             name = name,
             password = password,
             country = country,
-            contact = contact ?: "",
+            contact = contact,
             provider = provider ?: "default",
             providerId = providerId,
         )
@@ -68,7 +68,6 @@ data class UserInfoResponse(
     val country: Int?,
     val contact: String?,
     val createdAt: LocalDateTime,
-    val provider: String?,
 )
 
 data class UserInfoRequest(

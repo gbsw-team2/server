@@ -84,6 +84,7 @@ class GoogleOAuthService(
                     name = name,
                     password = null,
                     country = null,
+                    contact = null,
                     createdAt = LocalDateTime.now(),
                     provider = provider,
                     providerId = providerId

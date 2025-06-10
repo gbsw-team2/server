@@ -98,8 +98,7 @@ class UserService(
             user.name,
             user.country!!.id,
             user.contact,
-            user.createdAt,
-            user.provider
+            user.createdAt
         )
     }
 
@@ -113,6 +112,9 @@ class UserService(
             val country = countryRepository.findById(dto.countryId).get()
             user.country = country
         }
+        if (user.contact != dto.contact) {
+            user.contact = dto.contact
+        }
 
         userRepository.save(user)
 
@@ -121,8 +123,7 @@ class UserService(
             user.name,
             user.country!!.id,
             user.contact,
-            user.createdAt,
-            user.provider
+            user.createdAt
         )
     }
 
@@ -140,8 +141,7 @@ class UserService(
             user.name,
             user.country!!.id,
             user.contact,
-            user.createdAt,
-            user.provider
+            user.createdAt
         )
     }
 

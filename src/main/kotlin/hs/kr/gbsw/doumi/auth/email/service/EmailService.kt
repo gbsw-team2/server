@@ -49,6 +49,7 @@ class EmailService(
 
             ResponseEntity.ok("인증번호 전송에 성공했습니다.")
         } catch (e: Exception) {
+            e.printStackTrace()
             ResponseEntity.status(500).body("인증번호 전송에 실패했습니다.")
         }
     }

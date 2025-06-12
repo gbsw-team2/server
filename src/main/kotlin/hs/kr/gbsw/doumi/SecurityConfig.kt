@@ -30,6 +30,7 @@ class SecurityConfig(
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests {
                 it.requestMatchers(
+                    "/login/oauth2/**",
                     "/api/users",
                     "/api/users/login",
                     "/api/users/verify",

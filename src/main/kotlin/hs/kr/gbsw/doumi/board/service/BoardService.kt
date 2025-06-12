@@ -39,54 +39,54 @@ class BoardService(
     val likeRepository: LikeRepository,
 ) {
 
-//    @Value("\${board.event.url}")
-//    lateinit var eventInfoApi: String
+    @Value("\${board.event.url}")
+    lateinit var eventInfoApi: String
 
-//    @Value("\${board.event.encode}")
-//    lateinit var key: String
+    @Value("\${board.event.encode}")
+    lateinit var key: String
 
-//    fun eventList(date: String): EventResponseDto {
-//        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-//        val now = LocalDate.parse(date, formatter)
-//
-//        val urlStr = "$eventInfoApi?serviceKey=$key&type=json"
-//        val objectMapper = jacksonObjectMapper()
-//        val allEvents = mutableListOf<EventItem>()
-//
-//        val initUrl = URL("$urlStr&pageNo=1&numOfRows=1")
-//        val initConn = initUrl.openConnection() as HttpURLConnection
-//        initConn.requestMethod = "GET"
-//        initConn.setRequestProperty("Accept", "application/json")
-//        val initResponse = initConn.inputStream.bufferedReader().use { it.readText() }
-//
-//        val initJson = objectMapper.readTree(initResponse)
-//        val total = initJson.path("response").path("body").path("totalCount").intValue()
-//        val totalPages = Math.ceil(total / 100.0).toInt()
-//
-//        for (i in 1..totalPages) {
-//            val pageUrl = URL("$urlStr&pageNo=$i&numOfRows=100")
-//            val conn = pageUrl.openConnection() as HttpURLConnection
-//            conn.requestMethod = "GET"
-//            conn.setRequestProperty("Accept", "application/json")
-//            val response = conn.inputStream.bufferedReader().use { it.readText() }
-//
-//            val jsonNode = objectMapper.readTree(response)
-//            val itemsNode = jsonNode.path("response").path("body").path("items").path("item")
-//
-//            val events = when {
-//                itemsNode.isArray -> objectMapper.convertValue(itemsNode, object : TypeReference<List<EventItem>>() {})
-//                itemsNode.isObject -> listOf(objectMapper.convertValue(itemsNode, EventItem::class.java))
-//                else -> emptyList()
-//            }
-//
-//            events.filterTo(allEvents) { event ->
-//                val endDate = LocalDate.parse(event.eventEndDate, formatter)
-//                !endDate.isBefore(now)
-//            }
-//        }
-//
-//        return EventResponseDto(allEvents)
-//    }
+    fun eventList(date: String): EventResponseDto {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val now = LocalDate.parse(date, formatter)
+
+        val urlStr = "$eventInfoApi?serviceKey=$key&type=json"
+        val objectMapper = jacksonObjectMapper()
+        val allEvents = mutableListOf<EventItem>()
+
+        val initUrl = URL("$urlStr&pageNo=1&numOfRows=1")
+        val initConn = initUrl.openConnection() as HttpURLConnection
+        initConn.requestMethod = "GET"
+        initConn.setRequestProperty("Accept", "application/json")
+        val initResponse = initConn.inputStream.bufferedReader().use { it.readText() }
+
+        val initJson = objectMapper.readTree(initResponse)
+        val total = initJson.path("response").path("body").path("totalCount").intValue()
+        val totalPages = Math.ceil(total / 100.0).toInt()
+
+        for (i in 1..totalPages) {
+            val pageUrl = URL("$urlStr&pageNo=$i&numOfRows=100")
+            val conn = pageUrl.openConnection() as HttpURLConnection
+            conn.requestMethod = "GET"
+            conn.setRequestProperty("Accept", "application/json")
+            val response = conn.inputStream.bufferedReader().use { it.readText() }
+
+            val jsonNode = objectMapper.readTree(response)
+            val itemsNode = jsonNode.path("response").path("body").path("items").path("item")
+
+            val events = when {
+                itemsNode.isArray -> objectMapper.convertValue(itemsNode, object : TypeReference<List<EventItem>>() {})
+                itemsNode.isObject -> listOf(objectMapper.convertValue(itemsNode, EventItem::class.java))
+                else -> emptyList()
+            }
+
+            events.filterTo(allEvents) { event ->
+                val endDate = LocalDate.parse(event.eventEndDate, formatter)
+                !endDate.isBefore(now)
+            }
+        }
+
+        return EventResponseDto(allEvents)
+    }
 
     fun createPost(dto: CreatePostDto, email: String): Post {
         val user = userRepository.findByEmail(email)!!

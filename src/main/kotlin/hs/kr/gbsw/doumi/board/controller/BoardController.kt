@@ -22,12 +22,12 @@ class BoardController(
 
     @ExceptionHandler(NoSuchElementException::class)
     fun handleNotFound(ex: NoSuchElementException): ResponseEntity<String> {
-        return ResponseEntity("${ex.message}", HttpStatus.NOT_FOUND)
+        return ResponseEntity.status(404).body("${ex.message}")
     }
 
     @ExceptionHandler(IllegalAccessException::class)
     fun handleIllegalAccess(ex: IllegalAccessException): ResponseEntity<String> {
-        return ResponseEntity("${ex.message}", HttpStatus.UNAUTHORIZED)
+        return ResponseEntity.status(401).body("${ex.message}")
     }
 
     @PostMapping("/post")
@@ -139,10 +139,10 @@ class BoardController(
         return ResponseEntity(HttpStatus.NO_CONTENT)
     }
 
-//    @GetMapping("/event")
-//    fun event(): ResponseEntity<EventResponseDto> {
-//        val response = boardService.eventList(LocalDate.now().toString())
-//        return ResponseEntity(response, HttpStatus.OK)
-//    }
+    @GetMapping("/event")
+    fun event(): ResponseEntity<EventResponseDto> {
+        val response = boardService.eventList(LocalDate.now().toString())
+        return ResponseEntity(response, HttpStatus.OK)
+    }
 
 }

@@ -14,6 +14,16 @@ class UserController(
     private val userService: UserService
 ) {
 
+    @ExceptionHandler(NoSuchElementException::class)
+    fun handleNotFound(ex: NoSuchElementException): ResponseEntity<String> {
+        return ResponseEntity.status(404).body("${ex.message}")
+    }
+
+    @ExceptionHandler(IllegalAccessException::class)
+    fun handleIllegalAccess(ex: IllegalAccessException): ResponseEntity<String> {
+        return ResponseEntity.status(401).body("${ex.message}")
+    }
+
     @PostMapping
     fun signup(
         @Valid @RequestBody dto: UserSignupRequest
@@ -36,17 +46,23 @@ class UserController(
     }
 
     @GetMapping("/info")
-    fun userInfo(principal: Principal): ResponseEntity<UserInfoResponse> {
+    fun userInfo(principal: Principal?): ResponseEntity<UserInfoResponse> {
+        if (principal == null) {
+            throw IllegalAccessException()
+        }
         val email = principal.name
-        val user = userService.userInfo(email)
-        return ResponseEntity(user, HttpStatus.OK)
+        val result = userService.userInfo(email)
+        return ResponseEntity(result, HttpStatus.OK)
     }
 
     @PutMapping("/info")
     fun updateUserInfo(
-        principal: Principal,
+        principal: Principal?,
         @RequestBody dto: UserInfoRequest
     ): ResponseEntity<UserInfoResponse> {
+        if (principal == null) {
+            throw IllegalAccessException()
+        }
         val email = principal.name
         val user = userService.updateUserInfo(dto, email)
         return ResponseEntity(user, HttpStatus.OK)
@@ -54,9 +70,12 @@ class UserController(
 
     @PutMapping("/info/password")
     fun updateUserPassword(
-        principal: Principal,
+        principal: Principal?,
         @RequestBody password: String
     ): ResponseEntity<UserInfoResponse> {
+        if (principal == null) {
+            throw IllegalAccessException()
+        }
         val email = principal.name
         val user = userService.updatePassword(password, email)
         return ResponseEntity(user, HttpStatus.OK)

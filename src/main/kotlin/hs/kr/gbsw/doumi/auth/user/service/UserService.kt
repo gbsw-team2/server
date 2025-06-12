@@ -92,7 +92,8 @@ class UserService(
     }
 
     fun userInfo(email: String): UserInfoResponse {
-        val user = userRepository.findByEmail(email)!!
+        val user = userRepository.findByEmail(email)
+            ?: throw NoSuchElementException()
         return UserInfoResponse(
             user.email,
             user.name,

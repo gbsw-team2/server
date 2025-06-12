@@ -28,11 +28,9 @@ class EmailService(
             val verifyCode = createVerifyCode()
 
             val verifyCodeTemplateResource = ClassPathResource("templates/verifyCode.html")
-            val verifyCodeHtmlContent = String(
-                Files.readAllBytes(verifyCodeTemplateResource.file.toPath()),
-                StandardCharsets.UTF_8
-            )
-
+            val verifyCodeHtmlContent = verifyCodeTemplateResource.inputStream
+                .bufferedReader(StandardCharsets.UTF_8)
+                .use { it.readText() }
             val htmlContent = verifyCodeHtmlContent.replace("{AUTH_CODE}", verifyCode)
 
             val message = mailSender.createMimeMessage()

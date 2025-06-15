@@ -24,14 +24,21 @@ data class UserSignupRequest(
     val password: String,
 
     @field:NotNull(message = "국적을 선택해 주세요.")
-    var country: Int
+    var country: Int,
+
+    @field:Pattern(
+        regexp = "\\d{2,3}-\\d{3,4}-\\d{4}",
+        message = "전화번호를 형식에 맞추어 작성해주세요."
+    )
+    var contact: String
 ) {
-  fun toEntity(name: String, password: String, country: Country, provider: String? = null, providerId: String? = null): Users =
+  fun toEntity(name: String, password: String, country: Country, contact: String, provider: String? = null, providerId: String? = null): Users =
         Users(
             email = email,
             name = name,
             password = password,
             country = country,
+            contact = contact,
             provider = provider ?: "default",
             providerId = providerId,
         )
@@ -59,11 +66,12 @@ data class UserInfoResponse(
     val email: String,
     val name: String?,
     val country: Int?,
+    val contact: String?,
     val createdAt: LocalDateTime,
-    val provider: String?,
 )
 
 data class UserInfoRequest(
-    val name: String?,
+    val name: String,
     val countryId: Int,
+    val contact: String?,
 )

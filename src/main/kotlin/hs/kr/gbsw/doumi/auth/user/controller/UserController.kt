@@ -81,16 +81,6 @@ class UserController(
         return ResponseEntity(user, HttpStatus.OK)
     }
 
-    @PostMapping("/update-country")
-    fun updateCountry(
-        @RequestHeader("Authorization") authorizationHeader: String,
-        @RequestBody countryDto: CountryDto
-    ): ResponseEntity<ResponseEntity<String>> {
-        val accessToken = authorizationHeader.substringAfter("Bearer ")
-
-        return ResponseEntity.ok(userService.updateCountry(accessToken, countryDto))
-    }
-
     @PostMapping("/refresh")
     fun refreshToken(
         @RequestParam email: String,

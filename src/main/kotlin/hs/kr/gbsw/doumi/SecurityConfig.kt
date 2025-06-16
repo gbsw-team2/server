@@ -56,7 +56,7 @@ class SecurityConfig(
         val configuration = CorsConfiguration()
 
         configuration.allowedOrigins = listOf("http://localhost:8081")
-        configuration.allowedMethods = listOf("POST", "GET", "PUT", "DELETE")
+        configuration.allowedMethods = listOf("POST", "GET", "PUT", "DELETE", "OPTIONS")
         configuration.allowedHeaders = listOf("Authorization", "Content-Type", "X-Requested-With")
         configuration.exposedHeaders = listOf("Authorization", "Content-Type")
 

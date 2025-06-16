@@ -57,7 +57,9 @@ class SecurityConfig(
 
         configuration.allowedOrigins = listOf("http://localhost:8081")
         configuration.allowedMethods = listOf("POST", "GET", "PUT", "DELETE")
-        configuration.allowedHeaders = listOf("*")
+        configuration.allowedHeaders = listOf("Authorization", "Content-Type", "X-Requested-With")
+        configuration.exposedHeaders = listOf("Authorization", "Content-Type")
+
         configuration.allowCredentials = true
 
         val source= UrlBasedCorsConfigurationSource()

@@ -8,9 +8,9 @@ data class EventResponseDto(
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class EventItem (
-    val eventNm: String,
-    val opar: String,
-    val eventStartDate: String,
-    val eventEndDate: String,
-    val homepageUrl: String,
+val eventNm: String,
+val opar: String,
+val eventStartDate: String,
+val eventEndDate: String,
+val homepageUrl: String,
 )

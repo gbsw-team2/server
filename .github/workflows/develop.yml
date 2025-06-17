@@ -29,8 +29,8 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Set up Docker Buildx
-        run: docker buildx create --name mybuilder --driver docker-container --use
+#      - name: Set up Docker Buildx
+#        run: docker buildx create --name mybuilder --driver docker-container --use
 
       - name: Github short sha
         id: sha

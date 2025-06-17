@@ -30,7 +30,7 @@ jobs:
           distribution: 'temurin'
 
 #      - name: Set up Docker Buildx
-g        run: docker buildx create --name mybuilder --driver docker-container --use
+#        run: docker buildx create --name mybuilder --driver docker-container --use
 
       - name: Github short sha
         id: sha
@@ -55,4 +55,4 @@ g        run: docker buildx create --name mybuilder --driver docker-container --
         run: |
           docker stop server || true
           docker rm server || true
-          docker run -d --name server -p 8080:8080 ghcr.io/dya-only/doumi/server:${{ steps.sha.outputs.sha_short }}
+          gocker run -d --name server -p 8080:8080 ghcr.io/dya-only/doumi/server:${{ steps.sha.outputs.sha_short }}

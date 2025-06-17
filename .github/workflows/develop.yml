@@ -23,6 +23,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Create application.yml from secret
+        run: |
+          mkdir -p src/main/resources
+          echo "${{ secrets.APPLICATION_PROPERTIES }}" > src/main/resources/application.yml
+
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
@@ -55,4 +60,4 @@ jobs:
         run: |
           docker stop server || true
           docker rm server || true
-          gocker run -d --name server -p 8080:8080 ghcr.io/dya-only/doumi/server:${{ steps.sha.outputs.sha_short }}
+          docker run -d --name server -p 8080:8080 ghcr.io/dya-only/doumi/server:${{ steps.sha.outputs.sha_short }}

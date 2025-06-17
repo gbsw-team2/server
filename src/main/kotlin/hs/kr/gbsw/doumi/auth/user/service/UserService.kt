@@ -32,7 +32,7 @@ class UserService(
     private val accessKey by lazy { Keys.hmacShaKeyFor(Decoders.BASE64.decode(access)) }
 
     fun signup(dto: UserSignupRequest): ResponseEntity<String> {
-        val verified = redisService.getVerifyEmail(dto.email)
+        val verified = redisService.getVerifyEmail(dto.email!!)
         if (verified != "verified") {
             return ResponseEntity.status(401).body("인증되지 않은 이메일입니다.")
         }
@@ -44,7 +44,7 @@ class UserService(
 
         val country = countryRepository.findById(dto.country).get()
         
-        user = dto.toEntity(dto.name, passwordEncoder.encode(dto.password), country, dto.contact)
+        user = dto.toEntity(dto.name!!, passwordEncoder.encode(dto.password), country, dto.contact)
 
         userRepository.save(user)
 

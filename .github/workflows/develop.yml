@@ -1,0 +1,63 @@
+name: Develop Stage Pipeline
+
+on:
+#  pull_request:
+#    branches: 'develop'
+#    types: closed
+  push:
+    branches:
+      - 'develop'
+
+permissions:
+  id-token: write
+  contents: write
+
+jobs:
+  build:
+    #if: github.event.pull_request.merged == true
+    runs-on:
+      labels: doumi
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create application.yml from secret
+        run: |
+          mkdir -p src/main/resources
+          echo "${{ secrets.APPLICATION_PROPERTIES }}" > src/main/resources/application.yml
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+#      - name: Set up Docker Buildx
+#        run: docker buildx create --name mybuilder --driver docker-container --use
+
+      - name: Github short sha
+        id: sha
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Set executable permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew clean build -x test
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/dya-only/doumi/server:${{ steps.sha.outputs.sha_short }}
+          platforms: |
+            linux/arm64
+
+      - name: Run container
+        run: |
+          docker stop server || true
+          docker rm server || true
+          docker run -d --name server -p 8080:8080 ghcr.io/dya-only/doumi/server:${{ steps.sha.outputs.sha_short }}

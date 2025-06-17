@@ -22,7 +22,6 @@ class UserService(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
     private val jwtTokenProvider: JwtTokenProvider,
-    private val emailService: EmailService,
     private val countryRepository: CountryRepository,
     private val redisService: RedisService
 ) {
@@ -49,15 +48,6 @@ class UserService(
         userRepository.save(user)
 
         return ResponseEntity.status(HttpStatus.OK).body("회원가입이 완료되었습니다.")
-    }
-
-    fun verify(dto: UserSignupVerifyRequest): ResponseEntity<String> {
-        val verified = emailService.validateEmailCode(dto.email, dto.vernum)
-        if (verified.statusCode == HttpStatus.OK) {
-            redisService.saveVerifyEmail(dto.email)
-        }
-
-        return verified
     }
 
     fun login(dto: UserLoginRequest): ResponseEntity<Map<String, String>> {
@@ -144,19 +134,6 @@ class UserService(
             user.contact,
             user.createdAt
         )
-    }
-
-    fun updateCountry(accessToken: String, countryDto: CountryDto): ResponseEntity<String> {
-        val claims = jwtTokenProvider.getClaims(accessToken, accessKey)
-        val email = claims["email"] as String
-
-        val user = userRepository.findByEmail(email)
-            ?: return ResponseEntity.status(404).body("사용자를 찾을 수 없습니다.")
-
-        user.country = countryRepository.findById(countryDto.countryId).get()
-        userRepository.save(user)
-
-        return ResponseEntity.status(HttpStatus.OK).body("회원 정보가 업데이트되었습니다.")
     }
 
     fun refreshToken(email: String, accessToken: String): ResponseEntity<Map<String, String>> {

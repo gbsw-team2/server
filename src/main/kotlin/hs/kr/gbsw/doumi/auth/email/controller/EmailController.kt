@@ -1,7 +1,9 @@
 package hs.kr.gbsw.doumi.auth.email.controller
 
 import hs.kr.gbsw.doumi.auth.email.dto.EmailDto
+import hs.kr.gbsw.doumi.auth.email.dto.EmailVerifyRequest
 import hs.kr.gbsw.doumi.auth.email.service.EmailService
+import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -20,4 +22,12 @@ class EmailController(
     ): ResponseEntity<String> {
         return emailService.sendEmail(emailDto)
     }
+
+    @PostMapping("/verify")
+    fun verify(
+        @Valid @RequestBody dto: EmailVerifyRequest
+    ): ResponseEntity<String> {
+        return emailService.verify(dto)
+    }
+
 }

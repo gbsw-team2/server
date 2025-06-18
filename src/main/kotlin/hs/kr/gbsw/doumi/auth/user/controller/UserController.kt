@@ -34,7 +34,7 @@ class UserController(
     @PostMapping("/login")
     fun login(
         @RequestBody @Valid dto: UserLoginRequest,
-    ): ResponseEntity<Map<String, String>> {
+    ): ResponseEntity<UserLoginResponse> {
         return userService.login(dto)
     }
 

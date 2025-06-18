@@ -31,17 +31,10 @@ class UserController(
         return userService.signup(dto)
     }
 
-    @PostMapping("/verify")
-    fun verify(
-        @Valid @RequestBody dto: UserSignupVerifyRequest
-    ): ResponseEntity<String> {
-        return userService.verify(dto)
-    }
-
     @PostMapping("/login")
     fun login(
         @RequestBody @Valid dto: UserLoginRequest,
-    ): ResponseEntity<Map<String, String>> {
+    ): ResponseEntity<UserLoginResponse> {
         return userService.login(dto)
     }
 

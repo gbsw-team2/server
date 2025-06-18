@@ -1,6 +1,5 @@
 package hs.kr.gbsw.doumi.auth.user.service
 
-import hs.kr.gbsw.doumi.auth.email.service.EmailService
 import hs.kr.gbsw.doumi.auth.jwt.ACCESS_EXPIRATION_MILLISECONDS
 import hs.kr.gbsw.doumi.auth.jwt.JwtTokenProvider
 import hs.kr.gbsw.doumi.auth.redis.service.RedisService
@@ -22,14 +21,13 @@ class UserService(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
     private val jwtTokenProvider: JwtTokenProvider,
-    private val emailService: EmailService,
     private val countryRepository: CountryRepository,
     private val redisService: RedisService
 ) {
     @Value("\${jwt.access_secret}")
     lateinit var access: String
 
-    private val accessKey by lazy { Keys.hmacShaKeyFor(Decoders.BASE64.decode(access)) }
+//    private val accessKey by lazy { Keys.hmacShaKeyFor(Decoders.BASE64.decode(access)) }
 
     fun signup(dto: UserSignupRequest): ResponseEntity<String> {
         val verified = redisService.getVerifyEmail(dto.email!!)
@@ -51,44 +49,35 @@ class UserService(
         return ResponseEntity.status(HttpStatus.OK).body("회원가입이 완료되었습니다.")
     }
 
-    fun verify(dto: UserSignupVerifyRequest): ResponseEntity<String> {
-        val verified = emailService.validateEmailCode(dto.email, dto.vernum)
-        if (verified.statusCode == HttpStatus.OK) {
-            redisService.saveVerifyEmail(dto.email)
-        }
-
-        return verified
-    }
-
-    fun login(dto: UserLoginRequest): ResponseEntity<Map<String, String>> {
+    fun login(dto: UserLoginRequest): ResponseEntity<UserLoginResponse> {
         val user = userRepository.findByEmail(dto.email)
             ?: return ResponseEntity.status(404).body(
-                mapOf("message" to "존재하지 않는 이메일입니다.")
+                UserLoginResponse("존재하지 않는 이메일입니다.", null)
             )
 
         if (!passwordEncoder.matches(dto.password, user.password)) {
             return ResponseEntity.status(401).body(
-                mapOf("message" to "비밀번호가 올바르지 않습니다.")
+                UserLoginResponse("비밀번호가 올바르지 않습니다.", null)
             )
         }
 
         val tokenInfo = jwtTokenProvider.createToken(user)
 
-        val cookie = ResponseCookie.from("access_token", tokenInfo.accessToken)
-            .httpOnly(true)
-            .secure(false) //현재는 개발을 위해 Https off
-            .path("/")
-            .maxAge(ACCESS_EXPIRATION_MILLISECONDS / 1000)
-            .sameSite("Lax")
-            .build()
+//        val cookie = ResponseCookie.from("access_token", tokenInfo.accessToken)
+//            .httpOnly(true)
+//            .secure(false) //현재는 개발을 위해 Https off
+//            .path("/")
+//            .maxAge(ACCESS_EXPIRATION_MILLISECONDS / 1000)
+//            .sameSite("Lax")
+//            .build()
+//
+//        val headers = HttpHeaders().apply {
+//            add(HttpHeaders.SET_COOKIE, cookie.toString())
+//        }
 
-        val headers = HttpHeaders().apply {
-            add(HttpHeaders.SET_COOKIE, cookie.toString())
-        }
+        val response = UserLoginResponse("로그인 성공", tokenInfo.accessToken)
 
-        return ResponseEntity.ok()
-            .headers(headers)
-            .body(mapOf("message" to "로그인 성공"))
+        return ResponseEntity.ok().body(response)
     }
 
     fun userInfo(email: String): UserInfoResponse {
@@ -144,19 +133,6 @@ class UserService(
             user.contact,
             user.createdAt
         )
-    }
-
-    fun updateCountry(accessToken: String, countryDto: CountryDto): ResponseEntity<String> {
-        val claims = jwtTokenProvider.getClaims(accessToken, accessKey)
-        val email = claims["email"] as String
-
-        val user = userRepository.findByEmail(email)
-            ?: return ResponseEntity.status(404).body("사용자를 찾을 수 없습니다.")
-
-        user.country = countryRepository.findById(countryDto.countryId).get()
-        userRepository.save(user)
-
-        return ResponseEntity.status(HttpStatus.OK).body("회원 정보가 업데이트되었습니다.")
     }
 
     fun refreshToken(email: String, accessToken: String): ResponseEntity<Map<String, String>> {

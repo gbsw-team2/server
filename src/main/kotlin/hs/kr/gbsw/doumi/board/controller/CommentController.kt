@@ -2,14 +2,11 @@ package hs.kr.gbsw.doumi.board.controller
 
 import hs.kr.gbsw.doumi.board.dto.CreateCommentDto
 import hs.kr.gbsw.doumi.board.dto.ResponseCommentDto
-import hs.kr.gbsw.doumi.board.model.Comment
 import hs.kr.gbsw.doumi.board.service.CommentService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 import java.security.Principal
-import java.time.LocalDateTime
 
 @RequestMapping("/api/comment")
 @RestController

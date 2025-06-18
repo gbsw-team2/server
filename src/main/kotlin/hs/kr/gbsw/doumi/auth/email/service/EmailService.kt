@@ -1,7 +1,10 @@
 package hs.kr.gbsw.doumi.auth.email.service
 
 import hs.kr.gbsw.doumi.auth.email.dto.EmailDto
+import hs.kr.gbsw.doumi.auth.email.dto.EmailVerifyRequest
+import hs.kr.gbsw.doumi.auth.redis.service.RedisService
 import org.springframework.core.io.ClassPathResource
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
@@ -13,7 +16,8 @@ import java.time.LocalDateTime
 
 @Service
 class EmailService(
-    private val mailSender: JavaMailSender
+    private val mailSender: JavaMailSender,
+    private val redisService: RedisService
 ) {
     private val verificationMap: MutableMap<String, Pair<String, LocalDateTime>> = mutableMapOf()
 
@@ -75,4 +79,14 @@ class EmailService(
             ResponseEntity.status(500).body("인증 중에 오류가 발생했습니다.")
         }
     }
+
+    fun verify(dto: EmailVerifyRequest): ResponseEntity<String> {
+        val verified = validateEmailCode(dto.email, dto.vernum)
+        if (verified.statusCode == HttpStatus.OK) {
+            redisService.saveVerifyEmail(dto.email)
+        }
+
+        return verified
+    }
+
 }

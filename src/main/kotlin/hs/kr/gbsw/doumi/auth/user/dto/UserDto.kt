@@ -49,6 +49,11 @@ data class UserLoginRequest(
     val password: String
 )
 
+data class UserLoginResponse(
+    val message: String,
+    val accessToken: String?
+)
+
 data class UserInfoResponse(
     val email: String,
     val name: String?,

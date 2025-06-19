@@ -21,7 +21,7 @@ class TranslateService(
 ) {
     fun toText(audioFile: MultipartFile, lang: String): String? {
         if (audioFile.isEmpty) {
-            throw IOException("'audioFile' is empty")
+            throw IOException("audioFile' is empty")
         }
 
         val audioBytes: ByteArray = audioFile.bytes

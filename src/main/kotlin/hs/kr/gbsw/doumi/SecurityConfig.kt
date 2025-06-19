@@ -38,7 +38,8 @@ class SecurityConfig(
                     "/api/email/send",
                     "/api/board/posts",
                     "/api/board/posts/**",
-                    "/api/map"
+                    "/api/map",
+                    "/api/board/event"
                 ).permitAll()
                     .requestMatchers("/api/users/info").authenticated()
                     .anyRequest().permitAll()

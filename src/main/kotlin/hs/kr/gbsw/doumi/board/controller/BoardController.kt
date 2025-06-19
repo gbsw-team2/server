@@ -7,6 +7,7 @@ import hs.kr.gbsw.doumi.board.dto.ResponsePostDto
 import hs.kr.gbsw.doumi.board.model.Like
 import hs.kr.gbsw.doumi.board.model.Post
 import hs.kr.gbsw.doumi.board.service.BoardService
+import hs.kr.gbsw.doumi.board.service.EventService
 import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -18,6 +19,7 @@ import java.time.LocalDate
 @RestController
 class BoardController(
     val boardService: BoardService,
+    private val eventService: EventService,
 ) {
 
     @ExceptionHandler(NoSuchElementException::class)
@@ -141,7 +143,7 @@ class BoardController(
 
     @GetMapping("/event")
     fun event(): ResponseEntity<EventResponseDto> {
-        val response = boardService.eventList(LocalDate.now().toString())
+        val response = eventService.eventList(LocalDate.now().toString())
         return ResponseEntity(response, HttpStatus.OK)
     }
 

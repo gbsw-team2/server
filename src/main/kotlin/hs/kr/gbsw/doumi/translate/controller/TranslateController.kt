@@ -1,9 +1,7 @@
 package hs.kr.gbsw.doumi.translate.controller
 
 import hs.kr.gbsw.doumi.translate.dto.TextRequest
-import hs.kr.gbsw.doumi.translate.dto.TextResponse
 import hs.kr.gbsw.doumi.translate.dto.VoiceRequest
-import hs.kr.gbsw.doumi.translate.dto.VoiceResponse
 import hs.kr.gbsw.doumi.translate.service.TranslateService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

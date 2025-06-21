@@ -94,13 +94,13 @@ class GoogleOAuthService(
 
         val tokenInfo = jwtTokenProvider.createToken(user)
 
-        val cookie = ResponseCookie.from("access_token", tokenInfo.accessToken)
-            .httpOnly(true)
-            .secure(false) //현재는 개발을 위해 Https off
-            .path("/")
-            .maxAge(ACCESS_EXPIRATION_MILLISECONDS / 1000)
-            .sameSite("Lax")
-            .build()
+//        val cookie = ResponseCookie.from("access_token", tokenInfo.accessToken)
+//            .httpOnly(true)
+//            .secure(false) //현재는 개발을 위해 Https off
+//            .path("/")
+//            .maxAge(ACCESS_EXPIRATION_MILLISECONDS / 1000)
+//            .sameSite("Lax")
+//            .build()
 
 //        val headers = HttpHeaders().apply {
 //            add(HttpHeaders.SET_COOKIE, cookie.toString())

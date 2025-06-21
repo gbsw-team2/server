@@ -1,6 +1,7 @@
 package hs.kr.gbsw.doumi.auth.oauth.controller
 
 import hs.kr.gbsw.doumi.auth.oauth.service.GoogleOAuthService
+import hs.kr.gbsw.doumi.auth.user.dto.UserLoginResponse
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -19,7 +20,7 @@ class OAuthController(
     }
 
     @GetMapping("/code/google")
-    fun handleGoogleCallback(@RequestParam("code") authCode: String): ResponseEntity<ResponseEntity<Map<String, Any>>> {
+    fun handleGoogleCallback(@RequestParam("code") authCode: String): ResponseEntity<ResponseEntity<UserLoginResponse>> {
         val googleToken = googleOAuthService.exchangeAuthCodeForTokens(authCode)
         val response = googleOAuthService.handleOAuthUser(googleToken)
 

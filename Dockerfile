@@ -1,7 +1,5 @@
 FROM openjdk:21-jdk-slim
 
-WORKDIR /app  # <-- 작업 디렉토리 설정
-
 ARG JAR_FILE=build/libs/*.jar
 
 COPY ${JAR_FILE} app.jar

@@ -99,7 +99,7 @@ class BoardService(
             modified = true
         }
 
-        return if(modified) Pair(boardRepository.save(post), modified) else Pair(post, modified)
+        return if(modified) Pair(boardRepository.save(post), true) else Pair(post, false)
     }
 
     fun deletePost(email: String, id: Long) {
@@ -117,10 +117,13 @@ class BoardService(
 
             val user: Join<Post, Users> = post.join("user", JoinType.LEFT)
 
+            val predicate1 = criteriaBuilder.like(post.get("title"), kw)
+            val predicate2 = criteriaBuilder.like(post.get("body"), kw)
+            val predicate3 = criteriaBuilder.like(user.get("email"), kw)
+
             criteriaBuilder.or(
-                criteriaBuilder.like(post.get("title"), kw),
-                criteriaBuilder.like(post.get("body"), kw),
-                criteriaBuilder.like(user.get("email"), kw),
+                predicate1,
+                criteriaBuilder.or(predicate2, predicate3)
             )
         }
     }

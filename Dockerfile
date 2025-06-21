@@ -4,8 +4,4 @@ ARG JAR_FILE=build/libs/*.jar
 
 COPY ${JAR_FILE} app.jar
 
-COPY gcloud-key.json gcloud-key.json
-
-ENV GOOGLE_APPLICATION_CREDENTIALS=gcloud-key.json
-
 ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -168,7 +168,7 @@ class UserService(
 //        return ResponseEntity.ok()
 //            .headers(headers)
 //            .body(mapOf("message" to "토큰 갱신 성공"))
-        val response = UserLoginResponse("로그인 성공", newAccessToken)
+        val response = UserLoginResponse("토큰 갱신 성공", newAccessToken)
 
         return ResponseEntity.ok().body(response)
     }

@@ -107,6 +107,7 @@ class TranslateService(
                 }
             }
         } catch (e: Exception) {
+            e.printStackTrace()
             throw RuntimeException(e)
         }
     }

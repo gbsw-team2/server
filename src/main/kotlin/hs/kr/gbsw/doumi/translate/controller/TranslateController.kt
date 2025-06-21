@@ -17,7 +17,7 @@ class TranslateController(
     @PostMapping("/voice")
     fun uploadVoice(
         @RequestPart audio: MultipartFile,
-        @RequestBody dto: VoiceRequest
+        @RequestPart dto: VoiceRequest
     ): ResponseEntity<String> {
         val text = translateService.toText(audio, dto.beforeLang!!) ?:
         return ResponseEntity(null, HttpStatus.BAD_REQUEST)

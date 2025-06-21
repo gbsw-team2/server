@@ -2,6 +2,7 @@ package hs.kr.gbsw.doumi.auth.oauth.service
 
 import hs.kr.gbsw.doumi.auth.jwt.ACCESS_EXPIRATION_MILLISECONDS
 import hs.kr.gbsw.doumi.auth.jwt.JwtTokenProvider
+import hs.kr.gbsw.doumi.auth.user.dto.UserLoginResponse
 import hs.kr.gbsw.doumi.auth.user.model.Users
 import hs.kr.gbsw.doumi.auth.user.repository.UserRepository
 import org.springframework.beans.factory.annotation.Value
@@ -67,7 +68,7 @@ class GoogleOAuthService(
     }
 
 
-    fun handleOAuthUser(token: Map<String, Any>): ResponseEntity<Map<String, Any>> {
+    fun handleOAuthUser(token: Map<String, Any>): ResponseEntity<UserLoginResponse> {
         val accessToken = token["access_token"] as String
 
         val userInfo = fetchGoogleUserInfo(accessToken)
@@ -101,16 +102,20 @@ class GoogleOAuthService(
             .sameSite("Lax")
             .build()
 
-        val headers = HttpHeaders().apply {
-            add(HttpHeaders.SET_COOKIE, cookie.toString())
-        }
+//        val headers = HttpHeaders().apply {
+//            add(HttpHeaders.SET_COOKIE, cookie.toString())
+//        }
+//
+//        return ResponseEntity.ok()
+//            .headers(headers)
+//            .body(mapOf(
+//                "message" to "토큰 갱신 성공",
+//                "newUser" to (user.country == null)
+//            ))
 
-        return ResponseEntity.ok()
-            .headers(headers)
-            .body(mapOf(
-                "message" to "토큰 갱신 성공",
-                "newUser" to (user.country == null)
-            ))
+        val response = UserLoginResponse("로그인 성공", tokenInfo.accessToken)
+
+        return ResponseEntity.ok().body(response)
     }
 
     private fun fetchGoogleUserInfo(accessToken: String): Map<String, Any> {

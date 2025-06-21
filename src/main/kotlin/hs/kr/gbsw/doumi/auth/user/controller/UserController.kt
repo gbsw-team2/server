@@ -78,11 +78,11 @@ class UserController(
     fun refreshToken(
         @RequestParam email: String,
         @RequestHeader("Authorization") authHeader: String?
-    ): ResponseEntity<Map<String, String>> {
+    ): ResponseEntity<UserLoginResponse> {
         val accessToken = authHeader?.let {
             if (it.startsWith("Bearer ")) it.substring(7) else null
         } ?: return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-            .body(mapOf("message" to "액세스 토큰이 필요합니다."))
+            .body(UserLoginResponse("액세스 토큰이 필요합니다.", null))
 
         return userService.refreshToken(email, accessToken)
     }

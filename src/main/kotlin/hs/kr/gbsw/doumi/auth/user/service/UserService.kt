@@ -135,36 +135,42 @@ class UserService(
         )
     }
 
-    fun refreshToken(email: String, accessToken: String): ResponseEntity<Map<String, String>> {
+    fun refreshToken(email: String, accessToken: String): ResponseEntity<UserLoginResponse> {
         if (!jwtTokenProvider.validateExpiredAccessToken(accessToken, email)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(mapOf("message" to "유효하지 않은 액세스 토큰입니다."))
+//                .body(mapOf("message" to "유효하지 않은 액세스 토큰입니다."))
+                .body(UserLoginResponse("유효하지 않은 액세스 토큰입니다.", null))
         }
 
         if (!jwtTokenProvider.validateRefreshToken(email)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(mapOf("message" to "유효하지 않은 리프레시 토큰입니다."))
+                .body(UserLoginResponse("유효하지 않은 리프레시 토큰입니다.", null))
+
         }
 
         val newAccessToken = jwtTokenProvider.recreationAccessToken(email)
             ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(mapOf("message" to "액세스 토큰 재발급에 실패했습니다."))
+                .body(UserLoginResponse("액세스 토큰 재발급에 실패했습니다.", null))
 
-        val cookie = ResponseCookie.from("doumi_access_token", newAccessToken)
-            .httpOnly(true)
-            .secure(false) //현재는 개발을 위해 Https off
-            .path("/")
-            .maxAge(ACCESS_EXPIRATION_MILLISECONDS / 1000)
-            .sameSite("Lax")
-            .build()
 
-        val headers = HttpHeaders().apply {
-            add(HttpHeaders.SET_COOKIE, cookie.toString())
-        }
+//        val cookie = ResponseCookie.from("doumi_access_token", newAccessToken)
+//            .httpOnly(true)
+//            .secure(false) //현재는 개발을 위해 Https off
+//            .path("/")
+//            .maxAge(ACCESS_EXPIRATION_MILLISECONDS / 1000)
+//            .sameSite("Lax")
+//            .build()
+//
+//        val headers = HttpHeaders().apply {
+//            add(HttpHeaders.SET_COOKIE, cookie.toString())
+//        }
+//
+//        return ResponseEntity.ok()
+//            .headers(headers)
+//            .body(mapOf("message" to "토큰 갱신 성공"))
+        val response = UserLoginResponse("로그인 성공", newAccessToken)
 
-        return ResponseEntity.ok()
-            .headers(headers)
-            .body(mapOf("message" to "토큰 갱신 성공"))
+        return ResponseEntity.ok().body(response)
     }
 
     fun logout(email: String): ResponseEntity<String> {

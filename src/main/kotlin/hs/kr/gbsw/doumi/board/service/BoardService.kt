@@ -46,7 +46,7 @@ class BoardService(
         keyword: String
     ): Page<Post> {
         val sorts: ArrayList<Sort.Order> = ArrayList()
-        sorts.add(Sort.Order.desc("createdDate"))
+        sorts.add(Sort.Order.desc("createdAt"))
         val pageable = PageRequest.of(page, 10, Sort.by(sorts))
 
         val spec = search(keyword)

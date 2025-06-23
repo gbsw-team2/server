@@ -29,7 +29,7 @@ class EventService(
         val endRange = now.plusDays(15)
 
         val urlStr = "$eventInfoApi?serviceKey=$key&type=json"
-        println(urlStr)
+//        println(urlStr)
         val objectMapper = jacksonObjectMapper()
         val allEvents = mutableListOf<EventItem>()
 
@@ -54,8 +54,8 @@ class EventService(
             val jsonNode: JsonNode = objectMapper.readTree(response)
             val itemsNode: JsonNode = jsonNode.path("response").path("body").path("items")
 
-            println("jsonNode: $jsonNode")
-            println("itemsNode: $itemsNode")
+//            println("jsonNode: $jsonNode")
+//            println("itemsNode: $itemsNode")
 
             val events: List<EventItem> = when {
                 itemsNode.isArray -> objectMapper.convertValue(itemsNode, object : TypeReference<List<EventItem>>() {})

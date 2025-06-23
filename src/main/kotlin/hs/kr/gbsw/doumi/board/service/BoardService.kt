@@ -49,7 +49,7 @@ class BoardService(
         sorts.add(Sort.Order.desc("createdAt"))
         val pageable = PageRequest.of(page, 10, Sort.by(sorts))
 
-        val spec = search(keyword)
+        val spec = search(keyword, countryId)
 
         return boardRepository.findByCountryId(countryId, spec, pageable)
     }
@@ -110,7 +110,7 @@ class BoardService(
         boardRepository.delete(post)
     }
 
-    private fun search(keyword: String): Specification<Post> {
+    private fun search(keyword: String, countryId: Int): Specification<Post> {
         return Specification<Post> { post, query, criteriaBuilder ->
             val kw = "%$keyword%"
             query!!.distinct(true)
@@ -120,10 +120,11 @@ class BoardService(
             val predicate1 = criteriaBuilder.like(post.get("title"), kw)
             val predicate2 = criteriaBuilder.like(post.get("body"), kw)
             val predicate3 = criteriaBuilder.like(user.get("email"), kw)
+            val predicate4 = criteriaBuilder.equal(post.get<Int>("countryId"), countryId)
 
             criteriaBuilder.or(
-                predicate1,
-                criteriaBuilder.or(predicate2, predicate3)
+                predicate4,
+                criteriaBuilder.or(predicate1, predicate2, predicate3)
             )
         }
     }

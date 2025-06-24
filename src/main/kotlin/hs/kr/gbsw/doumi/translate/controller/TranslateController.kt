@@ -17,16 +17,14 @@ class TranslateController(
     @PostMapping("/voice")
     fun uploadVoice(
         @RequestPart audio: MultipartFile,
-        @RequestPart dto: VoiceRequest
+        @RequestParam beforeLang: String,
+        @RequestParam afterLang: String
     ): ResponseEntity<String> {
-        val text = translateService.toText(audio, dto.beforeLang!!) ?:
-        return ResponseEntity(null, HttpStatus.BAD_REQUEST)
-
-        val translated = translateService.translate(text, dto.beforeLang, dto.afterLang!!) ?:
-        return ResponseEntity.badRequest().body("음성 변환 실패.")
-
+        val text = translateService.toText(audio, beforeLang) ?: return ResponseEntity.badRequest().body("음성 변환 실패.")
+        val translated = translateService.translate(text, beforeLang, afterLang) ?: return ResponseEntity.badRequest().body("번역 실패.")
         return ResponseEntity.ok().body(translated)
     }
+
 
     @PostMapping("/text")
     fun uploadText(

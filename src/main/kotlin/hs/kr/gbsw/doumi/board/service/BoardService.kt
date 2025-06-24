@@ -51,7 +51,7 @@ class BoardService(
 
         val spec = search(keyword, countryId)
 
-        return boardRepository.findByCountryId(countryId, spec, pageable)
+        return boardRepository.findByCountryId(spec, pageable)
     }
 
     fun getPost(id: Long): Post {
@@ -122,7 +122,7 @@ class BoardService(
             val predicate3 = criteriaBuilder.like(user.get("email"), kw)
             val predicate4 = criteriaBuilder.equal(post.get<Int>("countryId"), countryId)
 
-            criteriaBuilder.or(
+            criteriaBuilder.and(
                 predicate4,
                 criteriaBuilder.or(predicate1, predicate2, predicate3)
             )

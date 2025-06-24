@@ -127,10 +127,10 @@ class BoardController(
     fun postLike(
         principal: Principal,
         @PathVariable(required = true) postId: Long
-    ): ResponseEntity<Like> {
+    ): ResponseEntity<Map<String, Boolean>> {
         val result = boardService.postLike(principal.name, postId)
-        System.out.println(result)
-        return ResponseEntity(result, HttpStatus.CREATED)
+        // 좋아요 성공 후 isLike true 리턴
+        return ResponseEntity(mapOf("isLike" to true), HttpStatus.CREATED)
     }
 
     @DeleteMapping("/post/{postId}/like")
@@ -139,8 +139,10 @@ class BoardController(
         @PathVariable(required = true) postId: Long
     ): ResponseEntity<Map<String, Boolean>> {
         boardService.deleteLike(email = principal.name, postId)
+        // 삭제 성공 후 isLike false 리턴
         return ResponseEntity(mapOf("isLike" to false), HttpStatus.OK)
     }
+
 
     @GetMapping("/event")
     fun event(): ResponseEntity<EventResponseDto> {

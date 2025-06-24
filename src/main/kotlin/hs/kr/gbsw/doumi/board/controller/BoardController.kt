@@ -129,6 +129,7 @@ class BoardController(
         @PathVariable(required = true) postId: Long
     ): ResponseEntity<Like> {
         val result = boardService.postLike(principal.name, postId)
+        System.out.println(result)
         return ResponseEntity(result, HttpStatus.CREATED)
     }
 

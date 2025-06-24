@@ -59,11 +59,11 @@ class BoardService(
     }
 
     fun getLike(id: Long): Int {
-        return likeRepository.getLikesByPostId(id)
+        return likeRepository.getLikesByPostId(id).count()
     }
 
     fun getIsLike(email: String, postId: Long): Boolean {
-        return likeRepository.existsByUserEmailAndId(email, postId)
+        return likeRepository.existsByUserEmailAndPostId(email, postId)
     }
 
     fun addView(postId: Long): Int {
@@ -135,7 +135,7 @@ class BoardService(
         val post = getPost(postId)
 
         // 중복 좋아요 방지 로직 (예: 이미 좋아요 했으면 새로 저장 안 함)
-        if (likeRepository.existsByUserEmailAndId(email, postId)) {
+        if (likeRepository.existsByUserEmailAndPostId(email, postId)) {
             // 이미 좋아요 되어 있음
             throw IllegalStateException("Already liked")
         }

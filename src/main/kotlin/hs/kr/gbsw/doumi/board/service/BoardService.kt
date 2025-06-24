@@ -120,7 +120,7 @@ class BoardService(
             val predicate1 = criteriaBuilder.like(post.get("title"), kw)
             val predicate2 = criteriaBuilder.like(post.get("body"), kw)
             val predicate3 = criteriaBuilder.like(user.get("email"), kw)
-            val predicate4 = criteriaBuilder.equal(post.get<Int>("country"), countryId)
+            val predicate4 = criteriaBuilder.equal(post.get<Country>("country").get<Int>("id"), countryId)
 
             criteriaBuilder.and(
                 predicate4,

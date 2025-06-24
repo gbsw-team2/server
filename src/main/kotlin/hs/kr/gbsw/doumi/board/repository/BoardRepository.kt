@@ -9,6 +9,4 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.stereotype.Repository
 
 @Repository
-interface BoardRepository: JpaRepository<Post, Long>, JpaSpecificationExecutor<Post> {
-    fun findByCountryId(spec: Specification<Post>, pageable: Pageable): Page<Post>
-}
+interface BoardRepository: JpaRepository<Post, Long>, JpaSpecificationExecutor<Post>

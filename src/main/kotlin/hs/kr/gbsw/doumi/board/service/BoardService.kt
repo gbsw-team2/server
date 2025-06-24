@@ -51,7 +51,7 @@ class BoardService(
 
         val spec = search(keyword, countryId)
 
-        return boardRepository.findByCountryId(spec, pageable)
+        return boardRepository.findAll(spec, pageable)
     }
 
     fun getPost(id: Long): Post {

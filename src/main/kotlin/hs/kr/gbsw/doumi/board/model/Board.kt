@@ -1,5 +1,6 @@
 package hs.kr.gbsw.doumi.board.model
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import hs.kr.gbsw.doumi.auth.user.model.Country
 import hs.kr.gbsw.doumi.auth.user.model.Users
 import jakarta.persistence.*
@@ -23,12 +24,12 @@ class Post(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    @JsonIgnore
+    @JsonIgnoreProperties(value = ["hibernateLazyInitializer", "handler"])
     val user: Users,
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "country_id")
-    @JsonIgnore
+    @JsonIgnoreProperties(value = ["hibernateLazyInitializer", "handler"])
     var country: Country,
 
     @CreationTimestamp

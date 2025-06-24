@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository
 interface LikeRepository: JpaRepository<Like, Long> {
     fun getLikeByUserEmailAndPostId(email: String, postId: Long): Like?
     fun existsByUserEmailAndId(email: String, postId: Long): Boolean
-    fun getLikesByPostId(postId: Long): List<Like>
+    fun getLikesByPostId(postId: Long): Int
 }

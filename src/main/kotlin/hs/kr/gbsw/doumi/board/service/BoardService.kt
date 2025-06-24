@@ -116,11 +116,12 @@ class BoardService(
             query!!.distinct(true)
 
             val user: Join<Post, Users> = post.join("user", JoinType.LEFT)
+            val countryJoin: Join<Post, Country> = post.join("country", JoinType.LEFT)
 
             val predicate1 = criteriaBuilder.like(post.get("title"), kw)
             val predicate2 = criteriaBuilder.like(post.get("body"), kw)
             val predicate3 = criteriaBuilder.like(user.get("email"), kw)
-            val predicate4 = criteriaBuilder.equal(post.get<Country>("country").get<Int>("id"), countryId)
+            val predicate4 = criteriaBuilder.equal(countryJoin.get<Int>("id"), countryId)
 
             criteriaBuilder.and(
                 predicate4,

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import hs.kr.gbsw.doumi.auth.user.model.Country
 import hs.kr.gbsw.doumi.auth.user.model.Users
 import jakarta.persistence.*
-import net.minidev.json.annotate.JsonIgnore
 import org.hibernate.annotations.CreationTimestamp
 import java.time.LocalDateTime
 

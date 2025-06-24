@@ -4,12 +4,7 @@ import hs.kr.gbsw.doumi.auth.user.model.Users
 import jakarta.persistence.*
 
 @Entity
-@Table(
-    name = "post_like",
-    uniqueConstraints = [
-        UniqueConstraint(columnNames = ["user_id", "post_id"])
-    ]
-)
+@Table(name = "post_like")
 data class Like(
 
     @Id

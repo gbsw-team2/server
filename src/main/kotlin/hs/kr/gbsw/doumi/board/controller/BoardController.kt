@@ -4,7 +4,6 @@ import hs.kr.gbsw.doumi.auth.user.model.Country
 import hs.kr.gbsw.doumi.board.dto.CreatePostDto
 import hs.kr.gbsw.doumi.board.dto.EventResponseDto
 import hs.kr.gbsw.doumi.board.dto.ResponsePostDto
-import hs.kr.gbsw.doumi.board.model.Like
 import hs.kr.gbsw.doumi.board.model.Post
 import hs.kr.gbsw.doumi.board.service.BoardService
 import hs.kr.gbsw.doumi.board.service.EventService
@@ -128,7 +127,7 @@ class BoardController(
         principal: Principal,
         @PathVariable(required = true) postId: Long
     ): ResponseEntity<Map<String, Boolean>> {
-        val result = boardService.postLike(principal.name, postId)
+        boardService.postLike(principal.name, postId)
         // 좋아요 성공 후 isLike true 리턴
         return ResponseEntity(mapOf("isLike" to true), HttpStatus.CREATED)
     }

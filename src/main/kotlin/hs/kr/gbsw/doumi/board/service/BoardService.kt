@@ -134,10 +134,10 @@ class BoardService(
         val user = userRepository.findByEmail(email) ?: throw NoSuchElementException("User not found")
         val post = getPost(postId)
 
-        // 중복 좋아요 방지 로직 (예: 이미 좋아요 했으면 새로 저장 안 함)
-        if (likeRepository.existsByUserEmailAndId(email, postId)) {
-            // 이미 좋아요 되어 있음
-            throw IllegalStateException("Already liked")
+        // 중복 좋아요 방지 로직: 이미 좋아요 했으면 기존 좋아요 객체 리턴
+        val existingLike = likeRepository.getLikeByUserEmailAndPostId(email, postId)
+        if (existingLike != null) {
+            return existingLike
         }
 
         val like = Like(user = user, post = post)
@@ -146,9 +146,12 @@ class BoardService(
 
     fun deleteLike(email: String, postId: Long) {
         val like = likeRepository.getLikeByUserEmailAndPostId(email, postId)
-            ?: throw NoSuchElementException("Like not found")
-        likeRepository.delete(like)
+        if (like != null) {
+            likeRepository.delete(like)
+        }
+        // 좋아요가 없으면 그냥 넘어감 (예외 던지지 않음)
     }
+
 
 
 

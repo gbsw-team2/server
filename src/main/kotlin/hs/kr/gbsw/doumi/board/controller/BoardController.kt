@@ -136,9 +136,9 @@ class BoardController(
     fun deleteLike(
         principal: Principal,
         @PathVariable(required = true) postId: Long
-    ): ResponseEntity<Void> {
+    ): ResponseEntity<Map<String, Boolean>> {
         boardService.deleteLike(email = principal.name, postId)
-        return ResponseEntity(HttpStatus.NO_CONTENT)
+        return ResponseEntity(mapOf("isLike" to false), HttpStatus.OK)
     }
 
     @GetMapping("/event")
